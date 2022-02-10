@@ -17,17 +17,8 @@ public class State {
         this.state = state;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        State state1 = (State) o;
-        return this.state.equals(state1.state);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(state);
+    public boolean equals(State s) {
+        return this.state.equals(s.state);
     }
 
     public boolean isIn(StateSet s) {

@@ -28,6 +28,15 @@ public class StateSet extends HashSet<State> {
         return s.isIn(this) && this.isIn(s);
     }
 
+    public boolean disjoint(StateSet s){
+        Iterator<State> ite = this.iterator();
+        while(ite.hasNext()) {
+            State stateT = ite.next();
+            if(stateT.isIn(s)) return false;
+        }
+        return true;
+    }
+
     @Override
     public String toString() {
         String rep = "";

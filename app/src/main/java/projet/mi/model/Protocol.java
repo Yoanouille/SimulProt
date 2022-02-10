@@ -32,23 +32,43 @@ public class Protocol {
             System.exit(1);
         }
         if(states == null) {
-            System.out.println("STATES missing !");
+            System.out.println("STATES missing!");
             System.exit(1);
         }
         if(init == null) {
-            System.out.println("INITIAL missing !");
+            System.out.println("INITIAL missing!");
             System.exit(1);
         }
         if(yes == null) {
-            System.out.println("YES missing !");
+            System.out.println("YES missing!");
             System.exit(1);
         }
         if(no == null) {
-            System.out.println("NO missing !");
+            System.out.println("NO missing!");
             System.exit(1);
         }
         if(rules == null) {
-            System.out.println("RULES missing !");
+            System.out.println("RULES missing!");
+            System.exit(1);
+        }
+
+        if(!init.isIn(states)){
+            System.out.println("INITIAL should be a subset of STATES!");
+            System.exit(1);
+        }
+
+        if(!yes.isIn(states)){
+            System.out.println("YES should be a subset of STATES!");
+            System.exit(1);
+        }
+
+        if(!no.isIn(states)){
+            System.out.println("NO should be a subset of STATES!");
+            System.exit(1);
+        }
+
+        if(!yes.disjoint(no)){
+            System.out.println("YES and NO should be disjoint!");
             System.exit(1);
         }
     }
