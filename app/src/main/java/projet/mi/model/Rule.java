@@ -16,6 +16,10 @@ public class Rule {
         }
     }
 
+    public State[] getRule(){
+        return this.rule;
+    }
+
     @Override
     public String toString() {
         return rule[0].toString() + " " + rule[1].toString() + " -> " + rule[2].toString() + " " + rule[3].toString();
