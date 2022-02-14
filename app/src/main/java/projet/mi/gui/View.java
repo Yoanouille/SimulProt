@@ -1,8 +1,10 @@
 package projet.mi.gui;
 
+import javafx.event.ActionEvent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -32,6 +34,8 @@ public class View extends BorderPane {
     private Population pop;
     private Animation anim;
 
+    private boolean running = false;
+
     public View() {
 
         this.canvas = new Canvas(this.width, this.height);
@@ -40,21 +44,11 @@ public class View extends BorderPane {
         HBox bottomPane = new HBox();
 
         select = new Button("Import");
-        select.setOnMouseClicked((e) -> {
-                Stage stage = new Stage();
-                FileChooser filechooser = new FileChooser();
-                File file = filechooser.showOpenDialog(stage);
-                if(file != null) {
-                    stage.close();
-                    this.pop = new Population(new Protocol(file.getPath()));
-                    this.anim = new Animation(this.pop, this.width, this.height);
-                    this.anim.draw(this.ctx);
-                }
-            }
-        );
+        select.setOnAction(this::selectBrowse);
         bottomPane.getChildren().add(select);
 
         togglePlay = new Button("Play");
+        togglePlay.setOnAction(this::togglePlayAction);
         bottomPane.getChildren().add(togglePlay);
 
         accelerate = new Button("Speed Up");
@@ -63,24 +57,32 @@ public class View extends BorderPane {
         this.setCenter(this.canvas);
         this.setBottom(bottomPane);
 
-        draw();
-
     }
 
-    public void drawBorder() {
-        ctx.beginPath();
-        ctx.setStroke(Color.BLACK);
-        ctx.moveTo(0,0);
-        ctx.lineTo(this.width, 0);
-        ctx.lineTo(this.width, this.height);
-        ctx.lineTo(0, this.height);
-        ctx.closePath();
-        ctx.stroke();
+    private void selectBrowse(ActionEvent e) {
+        Stage stage = new Stage();
+        FileChooser filechooser = new FileChooser();
+        File file = filechooser.showOpenDialog(stage);
+        if(file != null) {
+            stage.close();
+            this.pop = new Population(new Protocol(file.getPath()));
+            this.anim = new Animation(this.pop, this.width, this.height, this.ctx);
+            this.anim.draw(this.ctx);
+        }
     }
 
-    public void draw() {
-        this.ctx.setFill(new Color(1,1,1,1));
-        this.ctx.fillRect(0,0,this.width, this.height);
-        drawBorder();
+
+    private void togglePlayAction(ActionEvent e) {
+        if(!running) {
+            running = true;
+            this.anim.start();
+            togglePlay.setText("Pause");
+        }
+        else {
+            running = false;
+            this.anim.stop();
+            togglePlay.setText("Play");
+        }
     }
+
 }

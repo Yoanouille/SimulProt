@@ -27,7 +27,8 @@ public class Circle {
     }
 
     public int update(Circle[] circles, double dt){
-        this.pos = this.pos.add(this.vel.multiply(dt));
+        //this.pos = this.pos.add(this.vel.multiply(dt));
+        this.pos = this.pos.add(this.vel);
         //TODO collisions, retourne l'index de celui avec lequel il a collisionné
         return -1;
     }
