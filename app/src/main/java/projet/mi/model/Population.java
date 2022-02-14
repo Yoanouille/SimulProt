@@ -14,6 +14,10 @@ public class Population {
         this(protocol, randomPop(10, protocol));
     }
 
+    public int size(){
+        return this.agents.length;
+    }
+
     private static Agent[] randomPop(int sizePop, Protocol protocol) {
         Agent[] agentsRand = new Agent[sizePop];
         int len = protocol.getStates().size();
@@ -33,13 +37,17 @@ public class Population {
         }
     }
 
+    public void interact(int i, int j){
+        this.agents[i].interact(this.agents[j], this.protocol.getRules());
+    }
+
     public void randomInteraction(){
         int i = (int)(Math.random()*this.agents.length);
         int j;
         do{
             j = (int)(Math.random()*this.agents.length);
         }while(j == i);
-        this.agents[i].interact(this.agents[j], this.protocol.getRules());
+        this.interact(i, j);
     }
 
     public boolean allYes(){

@@ -10,6 +10,8 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import projet.mi.model.Population;
+import projet.mi.model.Protocol;
+import projet.mi.animation.Animation;
 
 import java.awt.*;
 import java.io.File;
@@ -28,6 +30,7 @@ public class View extends BorderPane {
     private double width = 800;
 
     private Population pop;
+    private Animation anim;
 
     public View() {
 
@@ -43,7 +46,9 @@ public class View extends BorderPane {
                 File file = filechooser.showOpenDialog(stage);
                 if(file != null) {
                     stage.close();
-                    System.out.println(file.getPath());
+                    this.pop = new Population(new Protocol(file.getPath()));
+                    this.anim = new Animation(this.pop, this.width, this.height);
+                    this.anim.draw(this.ctx);
                 }
             }
         );
@@ -64,7 +69,7 @@ public class View extends BorderPane {
 
     public void drawBorder() {
         ctx.beginPath();
-        ctx.setStroke(Color.WHITE);
+        ctx.setStroke(Color.BLACK);
         ctx.moveTo(0,0);
         ctx.lineTo(this.width, 0);
         ctx.lineTo(this.width, this.height);
