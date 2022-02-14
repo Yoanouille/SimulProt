@@ -2,10 +2,14 @@ package projet.mi.model;
 
 public class Agent {
 
-    State state;
+    private State state;
+    private double x;
+    private double y;
 
     public Agent(State state){
-        this.state = state;
+        this.state = new State(state.getState());
+        x = 0;
+        y = 0;
     }
 
     public State getState() {

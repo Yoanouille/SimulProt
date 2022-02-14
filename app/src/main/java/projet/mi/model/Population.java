@@ -10,6 +10,21 @@ public class Population {
         this.agents = agents;
     }
 
+    public Population(Protocol protocol) {
+        this(protocol, randomPop(10, protocol));
+    }
+
+    private static Agent[] randomPop(int sizePop, Protocol protocol) {
+        Agent[] agentsRand = new Agent[sizePop];
+        int len = protocol.getStates().size();
+        State[] possibleStates = new State[len];
+        protocol.getStates().toArray(possibleStates);
+        for(int i = 0; i < sizePop; i++) {
+            agentsRand[i] = new Agent(possibleStates[(int)(Math.random() * len)]);
+        }
+        return agentsRand;
+    }
+
     public Population(Protocol protocol, String[] states){
         this.protocol = protocol;
         this.agents = new Agent[states.length];
