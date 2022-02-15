@@ -17,11 +17,20 @@ public class Animation {
         this.pop = pop;
         this.circles = new Circle[pop.size()];
         this.ctx = ctx;
-        Circle.setRadius(10); //TODO calculer le radius en fonction du nombre de cercles et de width et height
+        Circle.setRadius(Math.sqrt(width*height/(2*10*3.14*this.circles.length))); // 10 is the percentage of the canvas filled with circles
+        double d = 2*Circle.getRadius();
         for(int i = 0; i < this.circles.length; i++){
-            double d = 2*Circle.getRadius();
             this.circles[i] = new Circle(Math.random()*(width-d)+Circle.getRadius(), Math.random()*(height-d)+Circle.getRadius(), 5, 5);
-            //TODO générer les cerles de manière à ce qu'ils ne se superposent pas
+            boolean collision;
+            do{
+                collision = false;
+                for(int j = 0; j < i; j++){
+                    if(this.circles[i].collision(this.circles[j])){
+                        this.circles[i].setPos(Math.random()*(width-d)+Circle.getRadius(), Math.random()*(height-d)+Circle.getRadius());
+                        collision = true;
+                    }
+                }
+            }while(collision);
         }
         this.width = width;
         this.height = height;
@@ -29,7 +38,24 @@ public class Animation {
     }
 
     public void boundCollisions() {
-        //TODO
+        for(Circle c : this.circles){
+            if(c.getPos().getX() - Circle.getRadius() < 0){
+                c.getPos().setX(Circle.getRadius());
+                c.getVel().setX(-c.getVel().getX());
+            }
+            if(c.getPos().getX() + Circle.getRadius() > this.width){
+                c.getPos().setX(this.width - Circle.getRadius());
+                c.getVel().setX(-c.getVel().getX());
+            }
+            if(c.getPos().getY() - Circle.getRadius() < 0){
+                c.getPos().setY(Circle.getRadius());
+                c.getVel().setY(-c.getVel().getY());
+            }
+            if(c.getPos().getY() + Circle.getRadius() > this.height){
+                c.getPos().setY(this.height - Circle.getRadius());
+                c.getVel().setY(-c.getVel().getY());
+            }
+        }
     }
 
     public void start() {
@@ -46,6 +72,7 @@ public class Animation {
             int j = this.circles[i].update(this.circles, dt);
             if(j != -1){
                 this.pop.interact(i, j);
+                System.out.println(this.pop);
             }
         }
         boundCollisions();

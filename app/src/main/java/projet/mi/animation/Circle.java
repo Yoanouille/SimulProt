@@ -26,11 +26,50 @@ public class Circle {
         return Circle.r;
     }
 
+    public Vector getPos(){
+        return this.pos;
+    }
+
+    public void setPos(double x, double y){
+        this.pos = new Vector(x, y);
+    }
+
+    public Vector getVel(){
+        return this.vel;
+    }
+
+    public boolean collision(Circle c){
+        return this.pos.sub(c.pos).length() < Circle.r*2;
+    }
+
+    public void collisionResponse(Circle c){
+        Vector diff = c.pos.sub(this.pos);
+        Vector mid = this.pos.add(diff.multiply(1./2.));
+        Vector move = diff.normalize().multiply(Circle.r);
+
+        //separate the circles
+        this.pos = mid.sub(move);
+        c.pos = mid.add(move);
+
+        //update the velocities
+        Vector tmp = this.vel;
+        this.vel = c.vel;
+        c.vel = tmp;
+    }
+
     public int update(Circle[] circles, double dt){
         //this.pos = this.pos.add(this.vel.multiply(dt));
         this.pos = this.pos.add(this.vel);
-        //TODO collisions, retourne l'index de celui avec lequel il a collisionné
-        return -1;
+        int colIndex = -1;
+        for(int i = 0; i < circles.length; i++){
+            if(circles[i] != this){
+                if(this.collision(circles[i])){
+                    this.collisionResponse(circles[i]);
+                    colIndex = i;
+                }
+            }
+        }
+        return colIndex;
     }
 
     public void draw(GraphicsContext ctx){
