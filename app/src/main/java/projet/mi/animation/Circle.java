@@ -74,7 +74,6 @@ public class Circle {
 
     public void draw(GraphicsContext ctx){
         double d = 2*r;
-        ctx.setFill(new Color(0,0,0,1));
         ctx.fillOval(this.pos.getX()-r, this.pos.getY()-r, d, d);
     }
 }

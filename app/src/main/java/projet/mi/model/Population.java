@@ -11,22 +11,22 @@ public class Population {
     }
 
     public Population(Protocol protocol) {
-        this(protocol, randomPop(10, protocol));
+        this.protocol = protocol;
+        this.randomPop(10);
     }
 
     public int size(){
         return this.agents.length;
     }
 
-    private static Agent[] randomPop(int sizePop, Protocol protocol) {
-        Agent[] agentsRand = new Agent[sizePop];
+    public void randomPop(int sizePop) {
+        this.agents = new Agent[sizePop];
         int len = protocol.getStates().size();
         State[] possibleStates = new State[len];
         protocol.getStates().toArray(possibleStates);
         for(int i = 0; i < sizePop; i++) {
-            agentsRand[i] = new Agent(possibleStates[(int)(Math.random() * len)]);
+            agents[i] = new Agent(possibleStates[(int)(Math.random() * len)]);
         }
-        return agentsRand;
     }
 
     public Population(Protocol protocol, String[] states){
@@ -78,6 +78,14 @@ public class Population {
                 break;
             }
         }
+    }
+
+    public Protocol getProtocol() {
+        return protocol;
+    }
+
+    public Agent[] getAgents() {
+        return agents;
     }
 
     @Override

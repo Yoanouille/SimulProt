@@ -24,6 +24,7 @@ public class View extends BorderPane {
 
     private Button select;
     private Button togglePlay;
+    private Button reset;
     private Button accelerate;
 
     private Canvas canvas;
@@ -47,6 +48,10 @@ public class View extends BorderPane {
         select.setOnAction(this::selectBrowse);
         bottomPane.getChildren().add(select);
 
+        reset = new Button("reset");
+        reset.setOnAction(this::resetAction);
+        bottomPane.getChildren().add(reset);
+
         togglePlay = new Button("Play");
         togglePlay.setOnAction(this::togglePlayAction);
         bottomPane.getChildren().add(togglePlay);
@@ -66,6 +71,11 @@ public class View extends BorderPane {
         if(file != null) {
             stage.close();
             this.pop = new Population(new Protocol(file.getPath()));
+            if(this.anim != null) {
+                this.anim.stop();
+                togglePlay.setText("Play");
+                running = false;
+            }
             this.anim = new Animation(this.pop, this.width, this.height, this.ctx);
             this.anim.draw(this.ctx);
         }
@@ -73,6 +83,9 @@ public class View extends BorderPane {
 
 
     private void togglePlayAction(ActionEvent e) {
+        if(this.anim == null) {
+            return;
+        }
         if(!running) {
             running = true;
             this.anim.start();
@@ -83,6 +96,17 @@ public class View extends BorderPane {
             this.anim.stop();
             togglePlay.setText("Play");
         }
+    }
+
+    private void resetAction(ActionEvent e) {
+        this.pop.randomPop(10);
+        if(this.anim != null) {
+            this.anim.stop();
+            togglePlay.setText("Play");
+            running = false;
+        }
+        this.anim = new Animation(this.pop, this.width, this.height, this.ctx);
+        this.anim.draw(this.ctx);
     }
 
 }

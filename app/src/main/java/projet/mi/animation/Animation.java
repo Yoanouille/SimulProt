@@ -3,7 +3,9 @@ package projet.mi.animation;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import projet.mi.model.Agent;
 import projet.mi.model.Population;
+import projet.mi.model.State;
 
 public class Animation {
     private Circle[] circles;
@@ -12,6 +14,8 @@ public class Animation {
     private double width;
     private AnimationTime anim;
     private GraphicsContext ctx;
+    private State[] states;
+    private Color[] colorsMap;
 
     public Animation(Population pop, double width, double height, GraphicsContext ctx){
         this.pop = pop;
@@ -35,6 +39,13 @@ public class Animation {
         this.width = width;
         this.height = height;
         anim = new AnimationTime();
+
+        states = new State[pop.getProtocol().getStates().size()];
+        pop.getProtocol().getStates().toArray(states);
+        colorsMap = new Color[states.length];
+        for(int i = 0; i < states.length; i++) {
+            colorsMap[i] = Color.hsb(i * 360.0 / states.length, 1.0, 1.0);
+        }
     }
 
     public void boundCollisions() {
@@ -78,6 +89,13 @@ public class Animation {
         boundCollisions();
     }
 
+    private int getIndex(int index) {
+        for(int i = 0; i < states.length; i++) {
+            if(states[i].equals(pop.getAgents()[index].getState())) return i;
+        }
+        return 0;
+    }
+
 
     public void drawBorder(GraphicsContext ctx) {
         ctx.beginPath();
@@ -95,8 +113,9 @@ public class Animation {
         ctx.setFill(new Color(1,1,1,1));
         ctx.fillRect(0,0,this.width, this.height);
 
-        for(Circle c : this.circles){
-            c.draw(ctx);
+        for(int i = 0; i < circles.length; i++){
+            ctx.setFill(colorsMap[getIndex(i)]);
+            circles[i].draw(ctx);
         }
 
         drawBorder(ctx);
