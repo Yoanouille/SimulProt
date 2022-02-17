@@ -8,6 +8,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -32,6 +33,9 @@ public class View extends BorderPane {
     private double height = 500;
     private double width = 800;
 
+    private Canvas legendCanvas;
+    private GraphicsContext legendCtx;
+
     private Population pop;
     private Animation anim;
 
@@ -41,6 +45,22 @@ public class View extends BorderPane {
 
         this.canvas = new Canvas(this.width, this.height);
         this.ctx = this.canvas.getGraphicsContext2D();
+
+        this.legendCanvas = new Canvas(200, 500);
+        this.legendCtx = this.legendCanvas.getGraphicsContext2D();
+        /*legendCtx.beginPath();
+        legendCtx.setStroke(Color.BLACK);
+        legendCtx.moveTo(0,0);
+        legendCtx.lineTo(300, 0);
+        legendCtx.lineTo(300, 500);
+        legendCtx.lineTo(0, 500);
+        legendCtx.closePath();
+        legendCtx.stroke();*/
+
+        HBox centralPane = new HBox();
+        centralPane.getChildren().add(legendCanvas);
+        centralPane.getChildren().add(canvas);
+
 
         HBox bottomPane = new HBox();
 
@@ -59,9 +79,8 @@ public class View extends BorderPane {
         accelerate = new Button("Speed Up");
         bottomPane.getChildren().add(accelerate);
 
-        this.setCenter(this.canvas);
+        this.setCenter(centralPane);
         this.setBottom(bottomPane);
-
     }
 
     private void selectBrowse(ActionEvent e) {
@@ -78,6 +97,7 @@ public class View extends BorderPane {
             }
             this.anim = new Animation(this.pop, this.width, this.height, this.ctx);
             this.anim.draw(this.ctx);
+            this.anim.drawLegend(this.legendCtx);
         }
     }
 
@@ -108,5 +128,4 @@ public class View extends BorderPane {
         this.anim = new Animation(this.pop, this.width, this.height, this.ctx);
         this.anim.draw(this.ctx);
     }
-
 }

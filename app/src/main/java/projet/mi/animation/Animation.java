@@ -1,8 +1,11 @@
 package projet.mi.animation;
 
+import com.sun.javafx.tk.Toolkit;
 import javafx.animation.AnimationTimer;
+import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import projet.mi.model.Population;
 import projet.mi.model.State;
 
@@ -101,6 +104,23 @@ public class Animation {
         ctx.lineTo(0, this.height);
         ctx.closePath();
         ctx.stroke();
+    }
+
+    public void drawLegend(GraphicsContext ctx){
+        ctx.clearRect(0, 0, ctx.getCanvas().getWidth(), ctx.getCanvas().getHeight());
+        double size = this.height/pop.getProtocol().getStates().size();
+        double x = 40;
+        double y = size/2;
+        ctx.setFont(new Font(ctx.getFont().getName(), 30));
+        ctx.setTextBaseline(VPos.CENTER);
+        for(State s : this.colorMap.keySet()){
+            ctx.setFill(Color.BLACK);
+            ctx.fillText(s.getState(), x, y);
+            ctx.setFill(this.colorMap.get(s));
+            double offset = Math.max(s.getState().length()*25, 70);
+            ctx.fillOval(x-15+offset, y-15, 30, 30);
+            y += size;
+        }
     }
 
 

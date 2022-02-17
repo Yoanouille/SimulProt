@@ -9,14 +9,10 @@ public class Menu extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        primaryStage.setWidth(800);
-        primaryStage.setHeight(500);
-
         viewScene = new Scene(new View());
         primaryStage.setScene(this.viewScene);
-
-        primaryStage.show();
-        primaryStage.setMinWidth(900);
+        primaryStage.setMinWidth(1050);
         primaryStage.setMinHeight(600);
+        primaryStage.show();
     }
 }
