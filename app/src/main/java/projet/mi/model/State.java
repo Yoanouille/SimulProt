@@ -33,4 +33,17 @@ public class State {
     public String toString() {
         return state;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        State state1 = (State) o;
+        return state1.equals(this);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(state);
+    }
 }

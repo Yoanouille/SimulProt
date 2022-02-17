@@ -3,9 +3,10 @@ package projet.mi.animation;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import projet.mi.model.Agent;
 import projet.mi.model.Population;
 import projet.mi.model.State;
+
+import java.util.HashMap;
 
 public class Animation {
     private Circle[] circles;
@@ -14,8 +15,7 @@ public class Animation {
     private double width;
     private AnimationTime anim;
     private GraphicsContext ctx;
-    private State[] states;
-    private Color[] colorsMap;
+    private HashMap<State, Color> colorMap;
 
     public Animation(Population pop, double width, double height, GraphicsContext ctx){
         this.pop = pop;
@@ -40,11 +40,11 @@ public class Animation {
         this.height = height;
         anim = new AnimationTime();
 
-        states = new State[pop.getProtocol().getStates().size()];
+        colorMap = new HashMap<>();
+        State[] states = new State[pop.getProtocol().getStates().size()];
         pop.getProtocol().getStates().toArray(states);
-        colorsMap = new Color[states.length];
         for(int i = 0; i < states.length; i++) {
-            colorsMap[i] = Color.hsb(i * 360.0 / states.length, 1.0, 1.0);
+            colorMap.put(states[i], Color.hsb(i * 360.0 / states.length, 1.0, 1.0));
         }
     }
 
@@ -92,14 +92,6 @@ public class Animation {
         boundCollisions();
     }
 
-    private int getIndex(int index) {
-        for(int i = 0; i < states.length; i++) {
-            if(states[i].equals(pop.getAgents()[index].getState())) return i;
-        }
-        return 0;
-    }
-
-
     public void drawBorder(GraphicsContext ctx) {
         ctx.beginPath();
         ctx.setStroke(Color.BLACK);
@@ -117,7 +109,7 @@ public class Animation {
         ctx.fillRect(0,0,this.width, this.height);
 
         for(int i = 0; i < circles.length; i++){
-            ctx.setFill(colorsMap[getIndex(i)]);
+            ctx.setFill(colorMap.get(pop.getAgents()[i].getState()));
             circles[i].draw(ctx);
         }
 

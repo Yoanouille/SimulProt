@@ -21,9 +21,9 @@ public class Population {
 
     public void randomPop(int sizePop) {
         this.agents = new Agent[sizePop];
-        int len = protocol.getStates().size();
+        int len = protocol.getInit().size();
         State[] possibleStates = new State[len];
-        protocol.getStates().toArray(possibleStates);
+        protocol.getInit().toArray(possibleStates);
         for(int i = 0; i < sizePop; i++) {
             agents[i] = new Agent(possibleStates[(int)(Math.random() * len)]);
         }
