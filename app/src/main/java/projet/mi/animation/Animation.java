@@ -17,7 +17,7 @@ public class Animation {
         this.pop = pop;
         this.circles = new Circle[pop.size()];
         this.ctx = ctx;
-        Circle.setRadius(Math.sqrt(width*height/(2*10*3.14*this.circles.length))); // 10 is the percentage of the canvas filled with circles
+        Circle.setRadius(Math.sqrt(width*height/(10*3.14*this.circles.length))); // 10 is the percentage of the canvas filled with circles
         double d = 2*Circle.getRadius();
         for(int i = 0; i < this.circles.length; i++){
             this.circles[i] = new Circle(Math.random()*(width-d)+Circle.getRadius(), Math.random()*(height-d)+Circle.getRadius(), 5, 5);
@@ -68,9 +68,12 @@ public class Animation {
     }
 
     public void update(double dt){
-        for(int i = 0; i < this.circles.length; i++){
-            int j = this.circles[i].update(this.circles, dt);
-            if(j != -1){
+        for (Circle circle : this.circles) {
+            circle.move(dt);
+        }
+        for(int i = 0; i < this.circles.length; i++) {
+            int j = this.circles[i].collisions(this.circles);
+            if (j != -1) {
                 this.pop.interact(i, j);
                 System.out.println(this.pop);
             }
@@ -107,10 +110,6 @@ public class Animation {
          * The time since the game was last updated
          */
         private long lastUpdateTime = System.nanoTime();
-        /**
-         * The current frame count
-         */
-        private int frame = 0;
 
 
         /**
@@ -118,14 +117,10 @@ public class Animation {
          * @param now the current time
          */
         public void handle(long now){
-            frame++;
-            if(frame % 2 == 0) {
-                long dt = now-lastUpdateTime;
-                update(dt);
-                draw(ctx);
-                lastUpdateTime = now;
-                frame = 0;
-            }
+            long dt = now-lastUpdateTime;
+            update(dt);
+            draw(ctx);
+            lastUpdateTime = now;
         }
     }
 

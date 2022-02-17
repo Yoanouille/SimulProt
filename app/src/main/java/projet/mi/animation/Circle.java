@@ -57,9 +57,12 @@ public class Circle {
         c.vel = tmp;
     }
 
-    public int update(Circle[] circles, double dt){
+    public void move(double dt){
         //this.pos = this.pos.add(this.vel.multiply(dt));
         this.pos = this.pos.add(this.vel);
+    }
+
+    public int collisions(Circle[] circles){
         int colIndex = -1;
         for(int i = 0; i < circles.length; i++){
             if(circles[i] != this){
