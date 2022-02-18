@@ -119,7 +119,7 @@ public class View extends BorderPane {
     }
 
     private void resetAction(ActionEvent e) {
-        this.pop.randomPop(10);
+        this.pop.randomPop(Population.defaultSize);
         if(this.anim != null) {
             this.anim.stop();
             togglePlay.setText("Play");

@@ -1,6 +1,5 @@
 package projet.mi.animation;
 
-import com.sun.javafx.tk.Toolkit;
 import javafx.animation.AnimationTimer;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
@@ -10,6 +9,7 @@ import projet.mi.model.Population;
 import projet.mi.model.State;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class Animation {
     private Circle[] circles;
@@ -113,12 +113,16 @@ public class Animation {
         double y = size/2;
         ctx.setFont(new Font(ctx.getFont().getName(), 30));
         ctx.setTextBaseline(VPos.CENTER);
-        for(State s : this.colorMap.keySet()){
+        for(Map.Entry<State, Color> e : this.colorMap.entrySet()){
+            State s = e.getKey();
+            Color c = e.getValue();
+
+            ctx.setFill(c);
+            ctx.fillOval(x-15, y-15, 30, 30);
+
             ctx.setFill(Color.BLACK);
-            ctx.fillText(s.getState(), x, y);
-            ctx.setFill(this.colorMap.get(s));
-            double offset = Math.max(s.getState().length()*25, 70);
-            ctx.fillOval(x-15+offset, y-15, 30, 30);
+            ctx.fillText(s.getState(), x+35, y);
+
             y += size;
         }
     }
