@@ -1,3 +1,4 @@
+Indique si il y a autant de A que de B
 STATES: A B 0 1
 INITIAL: A B
 RULES:

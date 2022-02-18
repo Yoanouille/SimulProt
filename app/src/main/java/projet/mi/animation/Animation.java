@@ -19,6 +19,7 @@ public class Animation {
     private AnimationTime anim;
     private GraphicsContext ctx;
     private HashMap<State, Color> colorMap;
+    private boolean colorMode;
 
     public Animation(Population pop, double width, double height, GraphicsContext ctx){
         this.pop = pop;
@@ -43,6 +44,7 @@ public class Animation {
         this.height = height;
         anim = new AnimationTime();
 
+        colorMode = false;
         colorMap = new HashMap<>();
         State[] states = new State[pop.getProtocol().getStates().size()];
         pop.getProtocol().getStates().toArray(states);
@@ -72,6 +74,10 @@ public class Animation {
         }
     }
 
+    public void change() {
+        this.colorMode = !this.colorMode;
+    }
+
     public void start() {
         this.anim.lastUpdateTime = System.nanoTime();
         this.anim.start();
@@ -79,6 +85,18 @@ public class Animation {
 
     public void stop() {
         this.anim.stop();
+    }
+
+    public void speed() {
+        for(Circle circle : this.circles) {
+            circle.speed();
+        }
+    }
+
+    public void slow() {
+        for(Circle circle : this.circles) {
+            circle.slow();
+        }
     }
 
     public void update(double dt){
@@ -117,7 +135,9 @@ public class Animation {
             State s = e.getKey();
             Color c = e.getValue();
 
-            ctx.setFill(c);
+            if(!colorMode) ctx.setFill(c);
+            else ctx.setFill(getColor(s));
+
             ctx.fillOval(x-15, y-15, 30, 30);
 
             ctx.setFill(Color.BLACK);
@@ -127,13 +147,21 @@ public class Animation {
         }
     }
 
+    private Color getColor(State s) {
+        if(s.isIn(pop.getProtocol().getYes())) return Color.GREEN;
+        else if(s.isIn(pop.getProtocol().getNo())) return Color.RED;
+        else return Color.BLACK;
+    }
+
 
     public void draw(GraphicsContext ctx){
         ctx.setFill(new Color(1,1,1,1));
         ctx.fillRect(0,0,this.width, this.height);
 
         for(int i = 0; i < circles.length; i++){
-            ctx.setFill(colorMap.get(pop.getAgents()[i].getState()));
+            State s = pop.getAgents()[i].getState();
+            if(!colorMode) ctx.setFill(colorMap.get(s));
+            else ctx.setFill(getColor(s));
             circles[i].draw(ctx);
         }
 

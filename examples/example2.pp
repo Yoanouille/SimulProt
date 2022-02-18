@@ -1,3 +1,4 @@
+Indique si il existe un Y dans la population
 STATES: Y N
 INITIAL: Y N
 RULES:

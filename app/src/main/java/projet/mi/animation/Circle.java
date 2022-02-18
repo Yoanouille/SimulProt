@@ -75,6 +75,14 @@ public class Circle {
         return colIndex;
     }
 
+    public void speed() {
+        this.vel = this.vel.multiply(2.0);
+    }
+
+    public void slow() {
+        this.vel = this.vel.multiply(0.5);
+    }
+
     public void draw(GraphicsContext ctx){
         double d = 2*r;
         ctx.fillOval(this.pos.getX()-r, this.pos.getY()-r, d, d);

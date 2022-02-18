@@ -1,3 +1,4 @@
+Indique si il y a plus de Y que de N dans la population
 STATES: Y y N n
 INITIAL: Y N
 RULES:

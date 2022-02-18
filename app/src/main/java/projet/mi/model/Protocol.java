@@ -1,4 +1,6 @@
 package projet.mi.model;
+import projet.mi.exception.IllegalSyntax;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
@@ -11,7 +13,7 @@ public class Protocol {
     private StateSet no;
     private Rule[] rules;
 
-    public Protocol(String fileName){
+    public Protocol(String fileName) throws IllegalSyntax {
         File f = new File(fileName);
         try{
             Scanner sc = new Scanner(f);
@@ -28,81 +30,70 @@ public class Protocol {
             }
 
         } catch(FileNotFoundException e){
-            System.out.println("The file: \""+fileName+"\" was not found");
-            System.exit(1);
+            throw new IllegalSyntax("The file: \""+fileName+"\" was not found");
         }
         if(states == null) {
-            System.out.println("STATES missing!");
-            System.exit(1);
+            throw new IllegalSyntax("STATES missing!");
         }
         if(init == null) {
-            System.out.println("INITIAL missing!");
-            System.exit(1);
+           throw new IllegalSyntax ("INITIAL missing!");
         }
         if(yes == null) {
-            System.out.println("YES missing!");
-            System.exit(1);
+            throw new IllegalSyntax("YES missing!");
         }
         if(no == null) {
-            System.out.println("NO missing!");
-            System.exit(1);
+            throw new IllegalSyntax("NO missing!");
         }
         if(rules == null) {
-            System.out.println("RULES missing!");
-            System.exit(1);
+            throw new IllegalSyntax("RULES missing!");
         }
 
         if(!init.isIn(states)){
-            System.out.println("INITIAL should be a subset of STATES!");
-            System.exit(1);
+            throw new IllegalSyntax("INITIAL should be a subset of STATES!");
         }
 
         if(!yes.isIn(states)){
-            System.out.println("YES should be a subset of STATES!");
-            System.exit(1);
+            throw new IllegalSyntax("YES should be a subset of STATES!");
         }
 
         if(!no.isIn(states)){
-            System.out.println("NO should be a subset of STATES!");
-            System.exit(1);
+            throw new IllegalSyntax("NO should be a subset of STATES!");
         }
 
         if(!yes.disjoint(no)){
-            System.out.println("YES and NO should be disjoint!");
-            System.exit(1);
+            throw new IllegalSyntax("YES and NO should be disjoint!");
+        }
+        for(int i = 0; i < rules.length; i++) {
+            rules[i].isIn(states);
         }
     }
 
-    private boolean readLine(String[] words){
+    private boolean readLine(String[] words) throws IllegalSyntax {
         switch(words[0]){
             case "STATES":
                 if(words.length <= 1) {
-                    System.out.println("Error syntax on line STATES !");
-                    System.exit(1);
+                    throw new IllegalSyntax("Error syntax on line STATES !");
                 }
                 states = new StateSet(words[1].split(" "));
                 break;
 
             case "INITIAL":
                 if(words.length <= 1) {
-                    System.out.println("Error syntax on line INITIAL !");
-                    System.exit(1);
+                    throw new IllegalSyntax("Error syntax on line INITIAL !");
                 }
                 init = new StateSet(words[1].split(" "));
                 break;
 
             case "YES":
                 if(words.length <= 1) {
-                    System.out.println("Error syntax on line YES !");
-                    System.exit(1);
+                    throw new IllegalSyntax("Error syntax on line YES !");
                 }
                 yes = new StateSet(words[1].split(" "));
                 break;
             
             case "NO":
                 if(words.length <= 1) {
-                    System.out.println("Error syntax on line NO !");
-                    System.exit(1);
+                    throw new IllegalSyntax("Error syntax on line NO !");
                 }
                 no = new StateSet(words[1].split(" "));
                 break;
@@ -113,16 +104,17 @@ public class Protocol {
         return true;
     }
 
-    private String readRules(Scanner sc){
+    private String readRules(Scanner sc) throws IllegalSyntax{
         String lastLine = "";
         LinkedList<Rule> rulesList = new LinkedList<>();
         boolean stillInRules = true;
         while(sc.hasNext() && stillInRules){
             String line = sc.next();
-            stillInRules = Character.isWhitespace(line.charAt(0));
+            stillInRules = line.length() == 0 || Character.isWhitespace(line.charAt(0));
             if(stillInRules){
-                int n = 1;
-                while(Character.isWhitespace(line.charAt(n))) n++;
+                int n = 0;
+                while(n < line.length() && Character.isWhitespace(line.charAt(n))) n++;
+                if(n >= line.length()) continue;
                 line = line.substring(n-1);
                 Rule rule = new Rule(line.substring(1).split(" -> | "));
                 rulesList.add(rule);
