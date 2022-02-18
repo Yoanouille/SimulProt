@@ -72,23 +72,23 @@ public class View extends BorderPane {
 
         HBox bottomPane = new HBox();
 
-        select = new Button("\uD83D\uDDC1");
+        select = new Button("Import");
         select.setOnAction(this::selectBrowse);
         bottomPane.getChildren().add(select);
 
-        reset = new Button("⟳");
+        reset = new Button("Reset");
         reset.setOnAction(this::resetAction);
         bottomPane.getChildren().add(reset);
 
-        togglePlay = new Button("▶");
+        togglePlay = new Button("Play");
         togglePlay.setOnAction(this::togglePlayAction);
         bottomPane.getChildren().add(togglePlay);
 
-        accelerate = new Button("⏭");
+        accelerate = new Button("Speed");
         accelerate.setOnAction(this::speedUpAction);
         bottomPane.getChildren().add(accelerate);
 
-        slow = new Button(" ⏮");
+        slow = new Button("Slow");
         slow.setOnAction(this::slowAction);
         bottomPane.getChildren().add(slow);
 
@@ -111,7 +111,7 @@ public class View extends BorderPane {
                 this.pop = new Population(new Protocol(file.getPath()));
                 if(this.anim != null) {
                     this.anim.stop();
-                    togglePlay.setText("▶");
+                    togglePlay.setText("Play");
                     running = false;
                 }
                 this.anim = new Animation(this.pop, this.width, this.height, this.ctx);
@@ -132,12 +132,12 @@ public class View extends BorderPane {
         if(!running) {
             running = true;
             this.anim.start();
-            togglePlay.setText("⏸︎");
+            togglePlay.setText("Pause");
         }
         else {
             running = false;
             this.anim.stop();
-            togglePlay.setText("▶");
+            togglePlay.setText("Play");
         }
     }
 
@@ -145,7 +145,7 @@ public class View extends BorderPane {
         this.pop.randomPop(Population.defaultSize);
         if(this.anim != null) {
             this.anim.stop();
-            togglePlay.setText("▶");
+            togglePlay.setText("Play");
             running = false;
         }
         this.anim = new Animation(this.pop, this.width, this.height, this.ctx);
