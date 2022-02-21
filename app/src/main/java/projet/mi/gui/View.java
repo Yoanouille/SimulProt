@@ -90,6 +90,7 @@ public class View extends BorderPane {
 
         slow = new Button("Slow");
         slow.setOnAction(this::slowAction);
+        slow.setDisable(true);
         bottomPane.getChildren().add(slow);
 
         change = new Button("Change");
@@ -143,6 +144,7 @@ public class View extends BorderPane {
 
     private void resetAction(ActionEvent e) {
         this.pop.randomPop(Population.defaultSize);
+        this.slow.setDisable(true);
         if(this.anim != null) {
             this.anim.stop();
             togglePlay.setText("Play");
@@ -161,10 +163,16 @@ public class View extends BorderPane {
 
     private void speedUpAction(ActionEvent e) {
         this.anim.speed();
+        if(this.anim.getSimulationSpeed() > 1){
+            this.slow.setDisable(false);
+        }
     }
 
     private void slowAction(ActionEvent e) {
         this.anim.slow();
+        if(this.anim.getSimulationSpeed() == 1){
+            this.slow.setDisable(true);
+        }
     }
 
     private void drawError(String error) {

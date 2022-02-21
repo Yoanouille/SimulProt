@@ -90,11 +90,15 @@ public class Animation {
     }
 
     public void speed() {
-        this.simulationSpeed++;
+        this.simulationSpeed *= 2;
     }
 
     public void slow() {
-        if(this.simulationSpeed > 1) this.simulationSpeed--;
+        if(this.simulationSpeed > 1) this.simulationSpeed /= 2;
+    }
+
+    public int getSimulationSpeed(){
+        return this.simulationSpeed;
     }
 
     public void update(double dt){
