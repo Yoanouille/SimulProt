@@ -3,6 +3,7 @@ import projet.mi.exception.IllegalSyntax;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Scanner;
 
@@ -12,8 +13,11 @@ public class Protocol {
     private StateSet yes;
     private StateSet no;
     private Rule[] rules;
+    private LinkedList<HashMap<State, Integer>> configurations;
 
     public Protocol(String fileName) throws IllegalSyntax {
+        this.configurations = new LinkedList<>();
+
         File f = new File(fileName);
         try{
             Scanner sc = new Scanner(f);
@@ -97,6 +101,12 @@ public class Protocol {
                 }
                 no = new StateSet(words[1].split(" "));
                 break;
+            case "CONF":
+                if(words.length <= 1) {
+                    throw new IllegalSyntax("Error syntax on line CONF !");
+                }
+                this.configurations.add(this.readConfiguration(words[1]));
+                break;
 
             default:
                 return false;
@@ -127,6 +137,29 @@ public class Protocol {
         return lastLine;
     }
 
+    private HashMap<State, Integer> readConfiguration(String line) throws IllegalSyntax{
+        HashMap<State, Integer> map = new HashMap<>();
+        String[] words = line.split(" ");
+        for(String w : words){
+            String[] stateNumber = w.split("=");
+            if(stateNumber.length != 2){
+                throw new IllegalSyntax("Error syntax on line CONF !");
+            }
+            int n;
+            try {
+                n = Integer.parseInt(stateNumber[1]);
+            } catch(RuntimeException e){
+                throw new IllegalSyntax("Error syntax on line CONF : an integer is needed after the '='");
+            }
+            State s = new State(stateNumber[0]);
+            if(!s.isIn(this.init)){
+                throw new IllegalSyntax("Error syntax on line CONF : the states of the configuration must be in INIT");
+            }
+            map.put(s, n);
+        }
+        return map;
+    }
+
     public StateSet getStates(){
         return states;
     }
@@ -145,6 +178,10 @@ public class Protocol {
 
     public Rule[] getRules(){
         return rules;
+    }
+
+    public LinkedList<HashMap<State, Integer>> getConfigurations() {
+        return configurations;
     }
 
     @Override

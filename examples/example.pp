@@ -8,3 +8,6 @@ RULES:
     y n -> y y
 YES: Y y
 NO: N n
+CONF: Y=4 N=4
+CONF: Y=5 N=4
+CONF: Y=4 N=5

@@ -1,15 +1,15 @@
 package projet.mi.gui;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.control.ComboBox;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
@@ -19,11 +19,11 @@ import projet.mi.exception.IllegalSyntax;
 import projet.mi.model.Population;
 import projet.mi.model.Protocol;
 import projet.mi.animation.Animation;
+import projet.mi.model.State;
 
-import javax.swing.*;
-import java.awt.*;
 import java.io.File;
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.LinkedList;
 
 
 public class View extends BorderPane {
@@ -34,6 +34,7 @@ public class View extends BorderPane {
     private Button accelerate;
     private Button slow;
     private Button change;
+    private ComboBox<String> configurations;
 
 
     private Canvas canvas;
@@ -97,6 +98,9 @@ public class View extends BorderPane {
         change.setOnAction(this::changeAction);
         bottomPane.getChildren().add(change);
 
+        configurations = new ComboBox<>();
+        configurations.setOnAction(this::resetAction);
+        bottomPane.getChildren().add(configurations);
 
         this.setCenter(centralPane);
         this.setBottom(bottomPane);
@@ -109,7 +113,18 @@ public class View extends BorderPane {
         if(file != null) {
             stage.close();
             try {
-                this.pop = new Population(new Protocol(file.getPath()));
+                Protocol p = new Protocol(file.getPath());
+                this.pop = new Population(p);
+
+                LinkedList<String> options = new LinkedList<>();
+                options.add("Random");
+                for(HashMap<State, Integer> c : p.getConfigurations()){
+                    options.add(c.toString());
+                }
+
+                configurations.setItems(FXCollections.observableArrayList(options));
+                configurations.setValue("Random");
+
                 if(this.anim != null) {
                     this.anim.stop();
                     togglePlay.setText("Play");
@@ -143,7 +158,13 @@ public class View extends BorderPane {
     }
 
     private void resetAction(ActionEvent e) {
-        this.pop.randomPop(Population.defaultSize);
+        int ind = configurations.getSelectionModel().getSelectedIndex();
+        if(ind <= 0){
+            this.pop.randomPop(Population.defaultSize);
+        } else {
+            this.pop.popFromMap(this.pop.getProtocol().getConfigurations().get(ind-1));
+        }
+
         this.slow.setDisable(true);
         if(this.anim != null) {
             this.anim.stop();

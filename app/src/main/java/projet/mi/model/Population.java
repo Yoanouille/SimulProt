@@ -1,9 +1,17 @@
 package projet.mi.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Population {
     private Protocol protocol;
     private Agent[] agents;
     public static int defaultSize = 8;
+
+    public Population(Protocol protocol, HashMap<State, Integer> configuration){
+        this.protocol = protocol;
+        this.popFromMap(configuration);
+    }
 
     public Population(Protocol protocol, Agent[] agents){
         this.protocol = protocol;
@@ -26,6 +34,21 @@ public class Population {
         protocol.getInit().toArray(possibleStates);
         for(int i = 0; i < sizePop; i++) {
             agents[i] = new Agent(possibleStates[(int)(Math.random() * len)]);
+        }
+    }
+
+    public void popFromMap(HashMap<State, Integer> configuration){
+        int n = 0;
+        for(int v : configuration.values()){
+            n += v;
+        }
+        this.agents = new Agent[n];
+        int ind = 0;
+        for(Map.Entry<State, Integer> e : configuration.entrySet()){
+            for(int i = 0; i < e.getValue(); i++){
+                this.agents[ind] = new Agent(e.getKey());
+                ind++;
+            }
         }
     }
 
