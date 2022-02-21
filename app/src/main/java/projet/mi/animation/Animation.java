@@ -20,6 +20,7 @@ public class Animation {
     private GraphicsContext ctx;
     private HashMap<State, Color> colorMap;
     private boolean colorMode;
+    private int simulationSpeed;
 
     public Animation(Population pop, double width, double height, GraphicsContext ctx){
         this.pop = pop;
@@ -28,7 +29,7 @@ public class Animation {
         Circle.setRadius(Math.sqrt(width*height/(10*3.14*this.circles.length))); // 10 is the percentage of the canvas filled with circles
         double d = 2*Circle.getRadius();
         for(int i = 0; i < this.circles.length; i++){
-            this.circles[i] = new Circle(Math.random()*(width-d)+Circle.getRadius(), Math.random()*(height-d)+Circle.getRadius(), 5, 5);
+            this.circles[i] = new Circle(Math.random()*(width-d)+Circle.getRadius(), Math.random()*(height-d)+Circle.getRadius(), 150, 150);
             boolean collision;
             do{
                 collision = false;
@@ -51,6 +52,7 @@ public class Animation {
         for(int i = 0; i < states.length; i++) {
             colorMap.put(states[i], Color.hsb(i * 360.0 / states.length, 1.0, 1.0));
         }
+        this.simulationSpeed = 1;
     }
 
     public void boundCollisions() {
@@ -88,15 +90,11 @@ public class Animation {
     }
 
     public void speed() {
-        for(Circle circle : this.circles) {
-            circle.speed();
-        }
+        this.simulationSpeed++;
     }
 
     public void slow() {
-        for(Circle circle : this.circles) {
-            circle.slow();
-        }
+        if(this.simulationSpeed > 1) this.simulationSpeed--;
     }
 
     public void update(double dt){
@@ -180,8 +178,10 @@ public class Animation {
          * @param now the current time
          */
         public void handle(long now){
-            long dt = now-lastUpdateTime;
-            update(dt);
+            double dt = ((double)(now-lastUpdateTime))/1000000000.; //delta time in seconds (now is in nanoseconds)
+            for(int i = 0; i < simulationSpeed; i++){
+                update(dt);
+            }
             draw(ctx);
             lastUpdateTime = now;
         }

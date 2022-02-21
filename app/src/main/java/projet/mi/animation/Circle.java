@@ -55,11 +55,16 @@ public class Circle {
         Vector tmp = this.vel;
         this.vel = c.vel;
         c.vel = tmp;
+
+        //randomize velocities a bit
+        double l = this.vel.length();
+        this.vel = this.vel.add(new Vector(Math.random()*30-15, Math.random()*30-15)).normalize().multiply(l);
+        c.vel = c.vel.add(new Vector(Math.random()*30-15, Math.random()*30-15)).normalize().multiply(l);
     }
 
     public void move(double dt){
-        //this.pos = this.pos.add(this.vel.multiply(dt));
-        this.pos = this.pos.add(this.vel);
+        this.pos = this.pos.add(this.vel.multiply(dt));
+        //this.pos = this.pos.add(this.vel);
     }
 
     public int collisions(Circle[] circles){

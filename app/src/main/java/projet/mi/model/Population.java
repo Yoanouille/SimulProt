@@ -3,7 +3,7 @@ package projet.mi.model;
 public class Population {
     private Protocol protocol;
     private Agent[] agents;
-    public static int defaultSize = 41;
+    public static int defaultSize = 8;
 
     public Population(Protocol protocol, Agent[] agents){
         this.protocol = protocol;
