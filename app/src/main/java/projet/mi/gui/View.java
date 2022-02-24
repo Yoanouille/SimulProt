@@ -1,13 +1,13 @@
 package projet.mi.gui;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -35,6 +35,7 @@ public class View extends BorderPane {
     private Button slow;
     private Button change;
     private ComboBox<String> configurations;
+    private TextField popSize;
 
 
     private Canvas canvas;
@@ -99,8 +100,15 @@ public class View extends BorderPane {
         bottomPane.getChildren().add(change);
 
         configurations = new ComboBox<>();
-        configurations.setOnAction(this::resetAction);
+        configurations.setOnAction(this::configurationAction);
+        configurations.setVisible(false);
         bottomPane.getChildren().add(configurations);
+
+        popSize = new TextField("8");
+        popSize.setMaxWidth(40);
+        popSize.setVisible(false);
+        popSize.setOnAction(this::popSizeAction);
+        bottomPane.getChildren().add(popSize);
 
         this.setCenter(centralPane);
         this.setBottom(bottomPane);
@@ -124,6 +132,8 @@ public class View extends BorderPane {
 
                 configurations.setItems(FXCollections.observableArrayList(options));
                 configurations.setValue("Random");
+                configurations.setVisible(true);
+                popSize.setVisible(true);
 
                 if(this.anim != null) {
                     this.anim.stop();
@@ -194,6 +204,16 @@ public class View extends BorderPane {
         if(this.anim.getSimulationSpeed() == 1){
             this.slow.setDisable(true);
         }
+    }
+
+    private void configurationAction(ActionEvent e){
+        popSize.setVisible(configurations.getValue().equals("Random"));
+        resetAction(e);
+    }
+
+    private void popSizeAction(ActionEvent e){
+        Population.setDefaultSize(Integer.parseInt(popSize.getCharacters().toString()));
+        resetAction(e);
     }
 
     private void drawError(String error) {

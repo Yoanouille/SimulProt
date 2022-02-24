@@ -109,7 +109,7 @@ public class Animation {
             int j = this.circles[i].collisions(this.circles);
             if (j != -1) {
                 this.pop.interact(i, j);
-                System.out.println(this.pop);
+                //System.out.println(this.pop);
             }
         }
         boundCollisions();

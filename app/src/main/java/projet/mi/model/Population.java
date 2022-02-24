@@ -111,6 +111,10 @@ public class Population {
         return agents;
     }
 
+    public static void setDefaultSize(int s){
+        defaultSize = s;
+    }
+
     @Override
     public String toString() {
         String s = "";
