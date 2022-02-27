@@ -184,6 +184,10 @@ public class Protocol {
         return configurations;
     }
 
+    public void addConf(HashMap<State, Integer> map) {
+        configurations.add(map);
+    }
+
     @Override
     public String toString() {
         String s = "STATES: " + states + "\n";

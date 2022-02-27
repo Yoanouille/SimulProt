@@ -21,6 +21,7 @@ import projet.mi.model.Protocol;
 import projet.mi.animation.Animation;
 import projet.mi.model.State;
 
+import javax.swing.*;
 import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -47,6 +48,7 @@ public class View extends BorderPane {
     private GraphicsContext legendCtx;
 
     private Population pop;
+    private String protocolPath;
     private Animation anim;
 
     private boolean running = false;
@@ -121,6 +123,7 @@ public class View extends BorderPane {
         if(file != null) {
             stage.close();
             try {
+                this.protocolPath = file.getPath();
                 Protocol p = new Protocol(file.getPath());
                 this.pop = new Population(p);
 
@@ -129,6 +132,7 @@ public class View extends BorderPane {
                 for(HashMap<State, Integer> c : p.getConfigurations()){
                     options.add(c.toString());
                 }
+                options.add("Create new one");
 
                 configurations.setItems(FXCollections.observableArrayList(options));
                 configurations.setValue("Random");
@@ -208,6 +212,13 @@ public class View extends BorderPane {
 
     private void configurationAction(ActionEvent e){
         popSize.setVisible(configurations.getValue().equals("Random"));
+        if(configurations.getValue().equals("Create new one")){
+            State[] states = new State[this.pop.getProtocol().getStates().size()];
+            this.pop.getProtocol().getStates().toArray(states);
+            new CreateConf(this,states);
+            System.out.println("coucou");
+            return;
+        }
         resetAction(e);
     }
 
@@ -224,5 +235,33 @@ public class View extends BorderPane {
         ctx.setTextAlign(TextAlignment.CENTER);
         ctx.setFill(Color.RED);
         ctx.fillText(error, width / 2, height / 2);
+    }
+
+    public void updateCustomConf(HashMap<State, Integer> map) {
+        this.pop.getProtocol().addConf(map);
+
+        LinkedList<String> options = new LinkedList<>();
+        options.add("Random");
+        int index = 1;
+        for(HashMap<State, Integer> c : this.pop.getProtocol().getConfigurations()){
+            options.add(c.toString());
+            index++;
+        }
+        options.add("Create new one");
+
+        //J'ai du désactiver les events sur configurations sinon ça fait des choses étranges
+        //En fait ça active le le listener alors que rien ne l'actionne, bref je comprends pas trop
+        configurations.setOnAction(this::nothing);
+        configurations.setItems(FXCollections.observableArrayList(options));
+        configurations.setOnAction(this::configurationAction);
+        configurations.getSelectionModel().select(index - 1);
+    }
+
+    public String getProtocolPath() {
+        return protocolPath;
+    }
+
+    private void nothing(ActionEvent e) {
+
     }
 }
