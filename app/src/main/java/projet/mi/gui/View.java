@@ -213,10 +213,9 @@ public class View extends BorderPane {
     private void configurationAction(ActionEvent e){
         popSize.setVisible(configurations.getValue().equals("Random"));
         if(configurations.getValue().equals("Create new one")){
-            State[] states = new State[this.pop.getProtocol().getStates().size()];
-            this.pop.getProtocol().getStates().toArray(states);
+            State[] states = new State[this.pop.getProtocol().getInit().size()];
+            this.pop.getProtocol().getInit().toArray(states);
             new CreateConf(this,states);
-            System.out.println("coucou");
             return;
         }
         resetAction(e);

@@ -1,15 +1,11 @@
+
 package projet.mi.gui;
 
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import projet.mi.model.State;
@@ -40,7 +36,7 @@ public class CreateConf extends Stage {
             this.setScene(scene);
 
             labels = new Label[states.length];
-            inputs = new Spinner[states.length];
+            inputs = (Spinner<Integer>[]) (new Spinner[states.length]);
             for(int i = 0; i < states.length; i++) {
                 labels[i] = new Label("Number of " + states[i] + " ");
                 labels[i].setFont(new Font(labels[i].getFont().getName(), 30));
@@ -72,6 +68,9 @@ public class CreateConf extends Stage {
             }
             view.updateCustomConf(map);
             this.close();
+
+            MenuSave save = new MenuSave(view.getProtocolPath(), map);
+            save.show();
         }
 
         private boolean isDigit(char c) {
