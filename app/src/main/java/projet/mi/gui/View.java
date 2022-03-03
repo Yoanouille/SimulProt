@@ -7,6 +7,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -35,6 +36,7 @@ public class View extends BorderPane {
     private Button accelerate;
     private Button slow;
     private Button change;
+    private Button changeLegend;
     private ComboBox<String> configurations;
     private TextField popSize;
 
@@ -52,14 +54,19 @@ public class View extends BorderPane {
     private Animation anim;
 
     private boolean running = false;
+    private boolean legend = true;
 
     public View() {
 
         this.canvas = new Canvas(this.width, this.height);
         this.ctx = this.canvas.getGraphicsContext2D();
 
-        this.legendCanvas = new Canvas(200, 500);
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setMaxWidth(220 + 20);
+        scrollPane.setMaxHeight(500);
+        this.legendCanvas = new Canvas(220, 500);
         this.legendCtx = this.legendCanvas.getGraphicsContext2D();
+        scrollPane.setContent(legendCanvas);
         /*legendCtx.beginPath();
         legendCtx.setStroke(Color.BLACK);
         legendCtx.moveTo(0,0);
@@ -70,7 +77,7 @@ public class View extends BorderPane {
         legendCtx.stroke();*/
 
         HBox centralPane = new HBox();
-        centralPane.getChildren().add(legendCanvas);
+        centralPane.getChildren().add(scrollPane);
         centralPane.getChildren().add(canvas);
 
 
@@ -100,6 +107,10 @@ public class View extends BorderPane {
         change = new Button("Change");
         change.setOnAction(this::changeAction);
         bottomPane.getChildren().add(change);
+
+        changeLegend = new Button("Show Rules");
+        changeLegend.setOnAction(this::changeLegendRule);
+        bottomPane.getChildren().add(changeLegend);
 
         configurations = new ComboBox<>();
         configurations.setOnAction(this::configurationAction);
@@ -134,9 +145,11 @@ public class View extends BorderPane {
                 }
                 options.add("Create new one");
 
+                configurations.setOnAction(this::nothing);
                 configurations.setItems(FXCollections.observableArrayList(options));
                 configurations.setValue("Random");
                 configurations.setVisible(true);
+                configurations.setOnAction(this::configurationAction);
                 popSize.setVisible(true);
 
                 if(this.anim != null) {
@@ -146,7 +159,8 @@ public class View extends BorderPane {
                 }
                 this.anim = new Animation(this.pop, this.width, this.height, this.ctx);
                 this.anim.draw(this.ctx);
-                this.anim.drawLegend(this.legendCtx);
+                legend = true;
+                drawInfo();
             } catch (IllegalSyntax ex) {
                 this.drawError(ex.getMessage());
             }
@@ -187,13 +201,16 @@ public class View extends BorderPane {
         }
         this.anim = new Animation(this.pop, this.width, this.height, this.ctx);
         this.anim.draw(this.ctx);
-        this.anim.drawLegend(this.legendCtx);
+        legend = true;
+        drawInfo();
     }
 
     private void changeAction(ActionEvent e) {
-        this.anim.change();
-        this.anim.draw(ctx);
-        this.anim.drawLegend(legendCtx);
+        if(this.pop != null) {
+            this.anim.change();
+            this.anim.draw(ctx);
+            drawInfo();
+        }
     }
 
     private void speedUpAction(ActionEvent e) {
@@ -260,7 +277,18 @@ public class View extends BorderPane {
         return protocolPath;
     }
 
-    private void nothing(ActionEvent e) {
+    private void nothing(ActionEvent e) {}
 
+    private void changeLegendRule(ActionEvent e) {
+        if(this.pop == null) return;
+        if(legend) changeLegend.setText("Show Legends");
+        else changeLegend.setText("Show Rules");
+        legend = !legend;
+        drawInfo();
+    }
+
+    private void drawInfo() {
+        if(legend) this.anim.drawLegend(this.legendCtx);
+        else this.anim.drawRuleColors(this.legendCtx);
     }
 }

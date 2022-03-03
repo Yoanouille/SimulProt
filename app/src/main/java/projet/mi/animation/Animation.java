@@ -6,6 +6,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import projet.mi.model.Population;
+import projet.mi.model.Rule;
 import projet.mi.model.State;
 
 import java.util.HashMap;
@@ -128,11 +129,14 @@ public class Animation {
 
     public void drawLegend(GraphicsContext ctx){
         ctx.clearRect(0, 0, ctx.getCanvas().getWidth(), ctx.getCanvas().getHeight());
-        double size = this.height/pop.getProtocol().getStates().size();
+        final double ecart = 50;
+        //double size = this.height/pop.getProtocol().getStates().size();
         double x = 40;
-        double y = size/2;
+        //double y = size/2;
+        double y = ecart / 2;
         ctx.setFont(new Font(ctx.getFont().getName(), 30));
         ctx.setTextBaseline(VPos.CENTER);
+        ctx.getCanvas().setHeight(ecart * pop.getProtocol().getStates().size() + ecart);
         for(Map.Entry<State, Color> e : this.colorMap.entrySet()){
             State s = e.getKey();
             Color c = e.getValue();
@@ -145,7 +149,48 @@ public class Animation {
             ctx.setFill(Color.BLACK);
             ctx.fillText(s.getState(), x+35, y);
 
-            y += size;
+            //y += size;
+            y += ecart;
+        }
+    }
+
+    private void updateFill(Color c, State s, GraphicsContext ctx) {
+        if(!colorMode) ctx.setFill(c);
+        else ctx.setFill(getColor(s));
+    }
+
+    public void drawRuleColors(GraphicsContext ctx) {
+        ctx.clearRect(0, 0, ctx.getCanvas().getWidth(), ctx.getCanvas().getHeight());
+        final double ecart = 50;
+        double y = ecart / 2;
+        ctx.setFont(new Font(ctx.getFont().getName(), 15));
+        ctx.setTextBaseline(VPos.CENTER);
+        Rule[] rules = pop.getProtocol().getRules();
+        ctx.getCanvas().setHeight(ecart * rules.length + ecart);
+        for(int i = 0; i < rules.length; i++) {
+            State[] rule = rules[i].getRule();
+            double x = 30;
+
+            updateFill(colorMap.get(rule[0]), rule[0], ctx);
+            ctx.fillOval(x-15, y-15, 30, 30);
+            x += 35;
+
+            updateFill(colorMap.get(rule[1]), rule[1], ctx);
+            ctx.fillOval(x-15, y-15, 30, 30);
+            x += 25;
+
+            ctx.setFill(Color.BLACK);
+            ctx.fillText("=>", x, y);
+            x += 45;
+
+            updateFill(colorMap.get(rule[2]), rule[2], ctx);
+            ctx.fillOval(x-15, y-15, 30, 30);
+            x += 35;
+
+            updateFill(colorMap.get(rule[3]), rule[3], ctx);
+            ctx.fillOval(x-15, y-15, 30, 30);
+
+            y += ecart;
         }
     }
 

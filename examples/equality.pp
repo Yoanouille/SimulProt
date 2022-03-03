@@ -11,3 +11,5 @@ RULES:
 CONF: A=3 B=3
 CONF: A=4 B=3
 
+
+CONF: A=10 B=10
