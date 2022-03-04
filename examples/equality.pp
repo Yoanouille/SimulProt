@@ -1,3 +1,4 @@
+TITLE: A = B
 STATES: A B 1 0
 INITIAL: A B
 YES: 1

@@ -1,4 +1,5 @@
 Indique si il y a 25% de A, 25% de B, 25% de C et 25% de D
+TITLE: A = B = C = D
 STATES: A B C D AB CD 0 1
 INITIAL: A B C D
 RULES:

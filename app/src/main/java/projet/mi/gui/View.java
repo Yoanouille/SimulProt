@@ -2,13 +2,12 @@ package projet.mi.gui;
 
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -39,6 +38,7 @@ public class View extends BorderPane {
     private Button changeLegend;
     private ComboBox<String> configurations;
     private TextField popSize;
+    private Label title;
 
 
     private Canvas canvas;
@@ -123,6 +123,14 @@ public class View extends BorderPane {
         popSize.setOnAction(this::popSizeAction);
         bottomPane.getChildren().add(popSize);
 
+        HBox topPane = new HBox();
+        topPane.setPadding(new Insets(10, 10, 10, 0));
+        title = new Label("You have to import your protocol !");
+        title.setFont(new Font(30));
+        topPane.getChildren().add(title);
+        topPane.setAlignment(Pos.CENTER);
+
+        this.setTop(topPane);
         this.setCenter(centralPane);
         this.setBottom(bottomPane);
     }
@@ -136,6 +144,7 @@ public class View extends BorderPane {
             try {
                 this.protocolPath = file.getPath();
                 Protocol p = new Protocol(file.getPath());
+                title.setText(p.getTitle());
                 this.pop = new Population(p);
 
                 LinkedList<String> options = new LinkedList<>();
@@ -246,7 +255,7 @@ public class View extends BorderPane {
     private void drawError(String error) {
         ctx.setFill(Color.WHITE);
         ctx.fillRect(0,0,width, height);
-        ctx.setFont(new Font(ctx.getFont().getName(), 30));
+        ctx.setFont(new Font(ctx.getFont().getName(), 20));
         ctx.setTextBaseline(VPos.CENTER);
         ctx.setTextAlign(TextAlignment.CENTER);
         ctx.setFill(Color.RED);

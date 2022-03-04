@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.Scanner;
 
 public class Protocol {
+    private String title = "No Title";
     private StateSet states;
     private StateSet init;
     private StateSet yes;
@@ -108,6 +109,12 @@ public class Protocol {
                 this.configurations.add(this.readConfiguration(words[1]));
                 break;
 
+            case "TITLE":
+                if(words.length <= 1) {
+                    throw new IllegalSyntax("Error syntax on line TITLE !");
+                }
+                this.title = words[1];
+                break;
             default:
                 return false;
         }
@@ -178,6 +185,10 @@ public class Protocol {
 
     public Rule[] getRules(){
         return rules;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public LinkedList<HashMap<State, Integer>> getConfigurations() {

@@ -1,4 +1,5 @@
 Indique si il y a  Card(Y) >= 2 * Card(N)
+TITLE: Y >= 2 * N
 STATES: Y N YN 1 0
 INITIAL: Y N
 YES: Y 1

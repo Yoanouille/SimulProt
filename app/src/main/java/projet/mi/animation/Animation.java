@@ -116,9 +116,10 @@ public class Animation {
         boundCollisions();
     }
 
-    public void drawBorder(GraphicsContext ctx) {
+    public void drawBorder(GraphicsContext ctx, Color c) {
+        ctx.setLineWidth(5);
         ctx.beginPath();
-        ctx.setStroke(Color.BLACK);
+        ctx.setStroke(c);
         ctx.moveTo(0,0);
         ctx.lineTo(this.width, 0);
         ctx.lineTo(this.width, this.height);
@@ -212,7 +213,9 @@ public class Animation {
             circles[i].draw(ctx);
         }
 
-        drawBorder(ctx);
+        if(pop.allYes()) drawBorder(ctx, Color.GREEN);
+        else if(pop.allNo()) drawBorder(ctx, Color.RED);
+        else drawBorder(ctx, Color.BLACK);
     }
 
     public class AnimationTime extends AnimationTimer {

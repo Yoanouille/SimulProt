@@ -1,4 +1,5 @@
 Indique si le nombre de A1 est divisible par 4
+TITLE: 4 / A1
 STATES: A0 A1 A2 A3 B0 B1 B2 B3
 INITIAL: A1
 YES: A0 B0
