@@ -39,6 +39,7 @@ public class View extends BorderPane {
     private ComboBox<String> configurations;
     private TextField popSize;
     private Label title;
+    private CheckBox names;
 
 
     private Canvas canvas;
@@ -123,6 +124,10 @@ public class View extends BorderPane {
         popSize.setOnAction(this::popSizeAction);
         bottomPane.getChildren().add(popSize);
 
+        names = new CheckBox("Draw names");
+        names.setOnAction(this::namesAction);
+        bottomPane.getChildren().add(names);
+
         HBox topPane = new HBox();
         topPane.setPadding(new Insets(10, 10, 10, 0));
         title = new Label("You have to import your protocol !");
@@ -167,6 +172,7 @@ public class View extends BorderPane {
                     running = false;
                 }
                 this.anim = new Animation(this.pop, this.width, this.height, this.ctx);
+                this.anim.setDrawNames(names.isSelected());
                 this.anim.draw(this.ctx);
                 legend = true;
                 drawInfo();
@@ -209,6 +215,7 @@ public class View extends BorderPane {
             running = false;
         }
         this.anim = new Animation(this.pop, this.width, this.height, this.ctx);
+        this.anim.setDrawNames(names.isSelected());
         this.anim.draw(this.ctx);
         legend = true;
         drawInfo();
@@ -250,6 +257,11 @@ public class View extends BorderPane {
     private void popSizeAction(ActionEvent e){
         Population.setDefaultSize(Integer.parseInt(popSize.getCharacters().toString()));
         resetAction(e);
+    }
+
+    private void namesAction(ActionEvent e){
+        this.anim.setDrawNames(names.isSelected());
+        this.anim.draw(ctx);
     }
 
     private void drawError(String error) {

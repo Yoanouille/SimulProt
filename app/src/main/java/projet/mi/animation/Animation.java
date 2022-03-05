@@ -5,6 +5,7 @@ import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import projet.mi.model.Population;
 import projet.mi.model.Rule;
 import projet.mi.model.State;
@@ -22,6 +23,7 @@ public class Animation {
     private HashMap<State, Color> colorMap;
     private boolean colorMode;
     private int simulationSpeed;
+    private boolean drawNames;
 
     public Animation(Population pop, double width, double height, GraphicsContext ctx){
         this.pop = pop;
@@ -29,8 +31,10 @@ public class Animation {
         this.ctx = ctx;
         Circle.setRadius(Math.sqrt(width*height/(10*3.14*this.circles.length))); // 10 is the percentage of the canvas filled with circles
         double d = 2*Circle.getRadius();
+        double spd = Circle.getRadius()*5;
         for(int i = 0; i < this.circles.length; i++){
-            this.circles[i] = new Circle(Math.random()*(width-d)+Circle.getRadius(), Math.random()*(height-d)+Circle.getRadius(), 150, 150);
+            double a = Math.random()*Math.PI*2;
+            this.circles[i] = new Circle(Math.random()*(width-d)+Circle.getRadius(), Math.random()*(height-d)+Circle.getRadius(), spd*Math.cos(a), spd*Math.sin(a));
             boolean collision;
             do{
                 collision = false;
@@ -47,6 +51,7 @@ public class Animation {
         anim = new AnimationTime();
 
         colorMode = false;
+        drawNames = false;
         colorMap = new HashMap<>();
         State[] states = new State[pop.getProtocol().getStates().size()];
         pop.getProtocol().getStates().toArray(states);
@@ -79,6 +84,10 @@ public class Animation {
 
     public void change() {
         this.colorMode = !this.colorMode;
+    }
+
+    public void setDrawNames(boolean b){
+        this.drawNames = b;
     }
 
     public void start() {
@@ -136,6 +145,7 @@ public class Animation {
         //double y = size/2;
         double y = ecart / 2;
         ctx.setFont(new Font(ctx.getFont().getName(), 30));
+        ctx.setTextAlign(TextAlignment.LEFT);
         ctx.setTextBaseline(VPos.CENTER);
         ctx.getCanvas().setHeight(ecart * pop.getProtocol().getStates().size() + ecart);
         for(Map.Entry<State, Color> e : this.colorMap.entrySet()){
@@ -168,28 +178,39 @@ public class Animation {
         ctx.setTextBaseline(VPos.CENTER);
         Rule[] rules = pop.getProtocol().getRules();
         ctx.getCanvas().setHeight(ecart * rules.length + ecart);
+        ctx.setTextAlign(TextAlignment.CENTER);
+        ctx.setTextBaseline(VPos.CENTER);
+        ctx.setFont(new Font(ctx.getFont().getName(), 16));
         for(int i = 0; i < rules.length; i++) {
             State[] rule = rules[i].getRule();
             double x = 30;
 
             updateFill(colorMap.get(rule[0]), rule[0], ctx);
             ctx.fillOval(x-15, y-15, 30, 30);
+            ctx.setFill(Color.BLACK);
+            ctx.fillText(rule[0].getState(), x, y);
             x += 35;
 
             updateFill(colorMap.get(rule[1]), rule[1], ctx);
             ctx.fillOval(x-15, y-15, 30, 30);
-            x += 25;
+            ctx.setFill(Color.BLACK);
+            ctx.fillText(rule[1].getState(), x, y);
+            x += 35;
 
             ctx.setFill(Color.BLACK);
             ctx.fillText("=>", x, y);
-            x += 45;
+            x += 35;
 
             updateFill(colorMap.get(rule[2]), rule[2], ctx);
             ctx.fillOval(x-15, y-15, 30, 30);
+            ctx.setFill(Color.BLACK);
+            ctx.fillText(rule[2].getState(), x, y);
             x += 35;
 
             updateFill(colorMap.get(rule[3]), rule[3], ctx);
             ctx.fillOval(x-15, y-15, 30, 30);
+            ctx.setFill(Color.BLACK);
+            ctx.fillText(rule[3].getState(), x, y);
 
             y += ecart;
         }
@@ -210,7 +231,7 @@ public class Animation {
             State s = pop.getAgents()[i].getState();
             if(!colorMode) ctx.setFill(colorMap.get(s));
             else ctx.setFill(getColor(s));
-            circles[i].draw(ctx);
+            circles[i].draw(ctx, this.drawNames ? s.getState() : "");
         }
 
         if(pop.allYes()) drawBorder(ctx, Color.GREEN);

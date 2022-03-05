@@ -1,7 +1,10 @@
 package projet.mi.animation;
 
+import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 
 public class Circle {
     private static double r;
@@ -88,8 +91,13 @@ public class Circle {
         this.vel = this.vel.multiply(0.5);
     }
 
-    public void draw(GraphicsContext ctx){
+    public void draw(GraphicsContext ctx, String name){
         double d = 2*r;
         ctx.fillOval(this.pos.getX()-r, this.pos.getY()-r, d, d);
+        ctx.setTextAlign(TextAlignment.CENTER);
+        ctx.setTextBaseline(VPos.CENTER);
+        ctx.setFont(new Font(ctx.getFont().getName(), r));
+        ctx.setFill(Color.BLACK);
+        ctx.fillText(name, this.pos.getX(), this.pos.getY());
     }
 }
