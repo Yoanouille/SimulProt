@@ -230,16 +230,20 @@ public class View extends BorderPane {
     }
 
     private void speedUpAction(ActionEvent e) {
-        this.anim.speed();
-        if(this.anim.getSimulationSpeed() > 1){
-            this.slow.setDisable(false);
+        if(this.anim != null){
+            this.anim.speed();
+            if(this.anim.getSimulationSpeed() > 1){
+                this.slow.setDisable(false);
+            }
         }
     }
 
     private void slowAction(ActionEvent e) {
-        this.anim.slow();
-        if(this.anim.getSimulationSpeed() == 1){
-            this.slow.setDisable(true);
+        if(this.anim != null) {
+            this.anim.slow();
+            if (this.anim.getSimulationSpeed() == 1) {
+                this.slow.setDisable(true);
+            }
         }
     }
 
@@ -260,8 +264,10 @@ public class View extends BorderPane {
     }
 
     private void namesAction(ActionEvent e){
-        this.anim.setDrawNames(names.isSelected());
-        this.anim.draw(ctx);
+        if(this.anim != null){
+            this.anim.setDrawNames(names.isSelected());
+            this.anim.draw(ctx);
+        }
     }
 
     private void drawError(String error) {
