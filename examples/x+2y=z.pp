@@ -14,6 +14,8 @@ RULES:
     y 1 -> y 0
     z 1 -> z 0
     zz 1 -> zz 0
+    xx 1 -> xx 0
     1 0 -> 1 1
 CONF: x=2 y=2 z=6
 CONF: x=2 y=1 z=4
+CONF: x=1 y=2 z=5
