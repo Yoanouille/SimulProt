@@ -1,5 +1,8 @@
 package projet.mi.model;
 
+import org.checkerframework.checker.units.qual.C;
+import projet.mi.graph.Configuration;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -122,5 +125,16 @@ public class Population {
             s += a+" ";
         }
         return s;
+    }
+
+    public Configuration getConfiguration(){
+        HashMap<State, Integer> c = new HashMap<>();
+        for(State s : protocol.getStates()){
+            c.put(s, 0);
+        }
+        for(Agent a : agents){
+            c.put(a.getState(), c.get(a.getState())+1);
+        }
+        return new Configuration(c);
     }
 }

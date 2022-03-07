@@ -1,6 +1,7 @@
 package projet.mi.model;
 
 import projet.mi.exception.IllegalSyntax;
+import projet.mi.graph.Configuration;
 
 import java.util.Arrays;
 
