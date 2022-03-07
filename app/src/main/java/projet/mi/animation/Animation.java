@@ -6,6 +6,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import projet.mi.graph.Configuration;
+import projet.mi.graph.Graph;
 import projet.mi.model.Population;
 import projet.mi.model.Rule;
 import projet.mi.model.State;
@@ -24,6 +26,7 @@ public class Animation {
     private boolean colorMode;
     private int simulationSpeed;
     private boolean drawNames;
+    private Graph graph;
 
     public Animation(Population pop, double width, double height, GraphicsContext ctx){
         this.pop = pop;
@@ -111,18 +114,21 @@ public class Animation {
         return this.simulationSpeed;
     }
 
-    public void update(double dt){
+    public boolean update(double dt){
         for (Circle circle : this.circles) {
             circle.move(dt);
         }
+        boolean collisionOccurred = false;
         for(int i = 0; i < this.circles.length; i++) {
             int j = this.circles[i].collisions(this.circles);
             if (j != -1) {
                 this.pop.interact(i, j);
                 //System.out.println(this.pop);
+                collisionOccurred = true;
             }
         }
         boundCollisions();
+        return collisionOccurred;
     }
 
     public void drawBorder(GraphicsContext ctx, Color c) {
@@ -252,8 +258,20 @@ public class Animation {
          */
         public void handle(long now){
             double dt = ((double)(now-lastUpdateTime))/1000000000.; //delta time in seconds (now is in nanoseconds)
+            boolean collisionOccurred = false;
             for(int i = 0; i < simulationSpeed; i++){
-                update(dt);
+                collisionOccurred = collisionOccurred || update(dt);
+            }
+            if(collisionOccurred){
+                Configuration conf = pop.getConfiguration();
+                if(true){
+                    graph = new Graph(pop.getProtocol(), conf);
+                }
+                if(graph.isFinal(conf)){
+                    this.stop();
+                    System.out.println("STOP!");
+                }
+                System.out.println(graph);
             }
             draw(ctx);
             lastUpdateTime = now;

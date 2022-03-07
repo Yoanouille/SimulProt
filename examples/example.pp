@@ -14,3 +14,4 @@ NO: N n
 CONF: Y=4 N=4
 CONF: Y=5 N=4
 CONF: Y=4 N=5
+CONF: Y=2 N=4

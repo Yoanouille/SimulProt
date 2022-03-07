@@ -28,7 +28,7 @@ public class Configuration {
     public Configuration applyRule(Rule r){
         Configuration c = clone();
         State[] arr = r.getRule();
-        if(c.conf.get(arr[0]) > 0 && c.conf.get(arr[1]) > 0){
+        if((arr[0].equals(arr[1]) && c.conf.get(arr[0]) >= 2) || (!arr[0].equals(arr[1]) && c.conf.get(arr[0]) > 0 && c.conf.get(arr[1]) > 0)){
             c.conf.put(arr[0], c.conf.get(arr[0])-1);
             c.conf.put(arr[1], c.conf.get(arr[1])-1);
             c.conf.put(arr[2], c.conf.get(arr[2])+1);
