@@ -57,7 +57,10 @@ public class View extends BorderPane {
     private boolean running = false;
     private boolean legend = true;
 
-    public View() {
+    private Menu menu;
+
+    public View(Menu menu) {
+        this.menu = menu;
 
         this.canvas = new Canvas(this.width, this.height);
         this.ctx = this.canvas.getGraphicsContext2D();
@@ -125,8 +128,14 @@ public class View extends BorderPane {
         bottomPane.getChildren().add(popSize);
 
         names = new CheckBox("Draw names");
+        names.setSelected(true);
         names.setOnAction(this::namesAction);
         bottomPane.getChildren().add(names);
+
+        Button back = new Button("Back");
+        bottomPane.getChildren().add(back);
+        back.setOnAction(this::backAction);
+        //TODO mettre dans le coin en bas à droite
 
         HBox topPane = new HBox();
         topPane.setPadding(new Insets(10, 10, 10, 0));
@@ -317,5 +326,9 @@ public class View extends BorderPane {
     private void drawInfo() {
         if(legend) this.anim.drawLegend(this.legendCtx);
         else this.anim.drawRuleColors(this.legendCtx);
+    }
+
+    public void backAction(ActionEvent e){
+        this.menu.changeScene("menu");
     }
 }

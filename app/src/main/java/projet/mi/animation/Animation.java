@@ -262,11 +262,11 @@ public class Animation {
             for(int i = 0; i < simulationSpeed; i++){
                 collisionOccurred = collisionOccurred || update(dt);
             }
-            if(collisionOccurred){
+            if(collisionOccurred && (pop.allNo() || pop.allYes())){
                 Configuration conf = pop.getConfiguration();
-                if(true){
+                //if(graph == null){
                     graph = new Graph(pop.getProtocol(), conf);
-                }
+                //}
                 if(graph.isFinal(conf)){
                     this.stop();
                     System.out.println("STOP!");
