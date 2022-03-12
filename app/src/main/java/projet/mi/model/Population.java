@@ -2,6 +2,7 @@ package projet.mi.model;
 
 import org.checkerframework.checker.units.qual.C;
 import projet.mi.graph.Configuration;
+import projet.mi.graph.Graph;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +25,11 @@ public class Population {
     public Population(Protocol protocol) {
         this.protocol = protocol;
         this.randomPop(defaultSize);
+    }
+
+    public Population(Protocol protocol, int size) {
+        this.protocol = protocol;
+        this.randomPop(size);
     }
 
     public int size(){
@@ -95,7 +101,7 @@ public class Population {
     }
 
     //Fonction temporaire pour tester sans interface graphique
-    public void simulate(int n){
+    /*public void simulate(int n){
         System.out.println(this);
         for(int i = 0; i < n || n == -1; i++){
             this.randomInteraction();
@@ -104,6 +110,21 @@ public class Population {
                 break;
             }
         }
+    }*/
+
+    public int simulate(int maxIterations){
+        int i;
+        for(i = 0; i < maxIterations; i++){
+            this.randomInteraction();
+            if(this.allYes() || this.allNo()){
+                Configuration conf = getConfiguration();
+                Graph g = new Graph(protocol, conf);
+                if(g.isFinal(conf)){
+                    break;
+                }
+            }
+        }
+        return i;
     }
 
     public Protocol getProtocol() {
