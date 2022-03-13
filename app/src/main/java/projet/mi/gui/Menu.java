@@ -9,11 +9,17 @@ public class Menu extends Application {
     private Scene simulateScene;
     private Scene statScene;
 
+    private MenuStat menuStat;
+
     private Stage primaryStage;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
+        primaryStage.setOnCloseRequest((e) -> {
+            if(menuStat != null) menuStat.stop();
+        });
+
         menuScene = new Scene(new FirstMenu(this));
 
         primaryStage.setScene(menuScene);
@@ -32,7 +38,8 @@ public class Menu extends Application {
                 primaryStage.setScene(simulateScene);
                 break;
             case "stat":
-                statScene = new Scene(new MenuStat(this));
+                menuStat = new MenuStat(this);
+                statScene = new Scene(menuStat);
                 primaryStage.setScene(statScene);
         }
     }

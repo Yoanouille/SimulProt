@@ -33,6 +33,7 @@ public class Stats {
         stats = new LinkedList<>();
         int i = 0;
         for(int size = minPopSize; size < maxPopSize; size += step){
+            if(Thread.currentThread().isInterrupted()) return stats;
             stats.add(computeStats(Math.min(size, maxPopSize), maxIterations, n));
             System.out.println(stats.get(i));
             i++;
@@ -50,5 +51,16 @@ public class Stats {
             if(stats.get(i).getAvg() > max) max = stats.get(i).getAvg();
         }
         return max;
+    }
+
+    public double getMaxValues(boolean avg, boolean min, boolean max, boolean median) {
+        double max_value = 0;
+        for(int i = 0; i < stats.size(); i++) {
+            if(avg && stats.get(i).getAvg() > max_value) max_value = stats.get(i).getAvg();
+            if(min && stats.get(i).getMin() > max_value) max_value = stats.get(i).getMin();
+            if(max && stats.get(i).getMax() > max_value) max_value = stats.get(i).getMax();
+            if(median && stats.get(i).getMedian() > max_value) max_value = stats.get(i).getMedian();
+        }
+        return max_value;
     }
 }

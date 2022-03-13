@@ -5,6 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
@@ -35,6 +36,11 @@ public class MenuStat extends BorderPane {
     private Protocol protocol;
     private Chart chart;
 
+    private CheckBox avg;
+    private CheckBox min;
+    private CheckBox max;
+    private CheckBox median;
+
     public MenuStat(Menu menu) {
         this.menu = menu;
 
@@ -52,6 +58,30 @@ public class MenuStat extends BorderPane {
         back = new Button("back");
         back.setOnAction(this::backAction);
         bottomPane.getChildren().add(back);
+
+        avg = new CheckBox("avg");
+        avg.setOnAction((e) -> {
+            if(chart != null) chart.setAvg(avg.isSelected());
+        });
+        bottomPane.getChildren().add(avg);
+
+        min = new CheckBox("min");
+        min.setOnAction((e) -> {
+            if(chart != null) chart.setMin(min.isSelected());
+        });
+        bottomPane.getChildren().add(min);
+
+        max = new CheckBox("max");
+        max.setOnAction((e) -> {
+            if(chart != null) chart.setMax(max.isSelected());
+        });
+        bottomPane.getChildren().add(max);
+
+        median = new CheckBox("median");
+        median.setOnAction((e) -> {
+            if(chart != null) chart.setMedian(median.isSelected());
+        });
+        bottomPane.getChildren().add(median);
 
         centralPane.getChildren().add(canvas);
 
@@ -75,6 +105,7 @@ public class MenuStat extends BorderPane {
         if(file != null) {
             try {
                 protocol = new Protocol(file.getPath());
+                if(chart != null) chart.stop();
                 chart = new Chart(canvas, protocol);
                 chart.draw(canvas.getGraphicsContext2D(), null);
             } catch (IllegalSyntax ex) {
@@ -85,6 +116,11 @@ public class MenuStat extends BorderPane {
     }
 
     public void backAction(ActionEvent e) {
+        if(chart != null) chart.stop();
         menu.changeScene("menu");
+    }
+
+    public void stop() {
+        if(chart != null) chart.stop();
     }
 }
