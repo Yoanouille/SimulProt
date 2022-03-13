@@ -26,7 +26,7 @@ public class Main {
         System.out.println(g);*/
 
         Stats s = new Stats(p);
-        s.statsForDifferentSizes(2, 10,1,10000, 10000);
+        s.statsForDifferentSizes(2, 10,1,10000, 10000, (st) -> {});
 
         Menu.launch(Menu.class, args);
     }

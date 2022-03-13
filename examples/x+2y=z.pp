@@ -19,3 +19,5 @@ RULES:
 CONF: x=2 y=2 z=6
 CONF: x=2 y=1 z=4
 CONF: x=1 y=2 z=5
+CONF: x=5 y=3 z=11
+CONF: x=10 y=4 z=20
