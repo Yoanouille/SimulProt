@@ -1,14 +1,24 @@
 package projet.mi.gui;
 
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import projet.mi.animation.Animation;
 import projet.mi.exception.IllegalSyntax;
+import projet.mi.model.Population;
 import projet.mi.model.Protocol;
+import projet.mi.model.State;
 import projet.mi.statistics.Chart;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.LinkedList;
 
 
 public class MenuStat extends BorderPane {
@@ -56,13 +66,22 @@ public class MenuStat extends BorderPane {
             System.exit(1);
         }
 
-        chart = new Chart(canvas, protocol);
-        chart.draw(canvas.getGraphicsContext2D(), null);
-
     }
 
     public void importAction(ActionEvent e) {
-
+        Stage stage = new Stage();
+        FileChooser filechooser = new FileChooser();
+        File file = filechooser.showOpenDialog(stage);
+        if(file != null) {
+            try {
+                protocol = new Protocol(file.getPath());
+                chart = new Chart(canvas, protocol);
+                chart.draw(canvas.getGraphicsContext2D(), null);
+            } catch (IllegalSyntax ex) {
+                //DrawError !
+                System.out.println(ex.getMessage());
+            }
+        }
     }
 
     public void backAction(ActionEvent e) {
