@@ -258,11 +258,11 @@ public class Animation {
          */
         public void handle(long now){
             double dt = ((double)(now-lastUpdateTime))/1000000000.; //delta time in seconds (now is in nanoseconds)
-            boolean collisionOccurred = false;
+            //boolean collisionOccurred = false;
             for(int i = 0; i < simulationSpeed; i++){
-                collisionOccurred = collisionOccurred || update(dt);
+                update(dt);
             }
-            if(collisionOccurred && (pop.allNo() || pop.allYes())){
+            /*if(collisionOccurred && (pop.allNo() || pop.allYes())){
                 Configuration conf = pop.getConfiguration();
                 //if(graph == null){
                     graph = new Graph(pop.getProtocol(), conf);
@@ -272,7 +272,7 @@ public class Animation {
                     System.out.println("STOP!");
                 }
                 System.out.println(graph);
-            }
+            }*/
             draw(ctx);
             lastUpdateTime = now;
         }

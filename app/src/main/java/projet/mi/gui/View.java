@@ -16,6 +16,8 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import projet.mi.exception.IllegalSyntax;
+import projet.mi.graph.Configuration;
+import projet.mi.graph.Graph;
 import projet.mi.model.Population;
 import projet.mi.model.Protocol;
 import projet.mi.animation.Animation;
@@ -40,6 +42,8 @@ public class View extends BorderPane {
     private TextField popSize;
     private Label title;
     private CheckBox names;
+    private Button isFinal;
+    private Label isFinalText;
 
 
     private Canvas canvas;
@@ -132,10 +136,18 @@ public class View extends BorderPane {
         names.setOnAction(this::namesAction);
         bottomPane.getChildren().add(names);
 
+        isFinal = new Button("Check if the configuration is final");
+        isFinal.setOnAction(this::isFinalAction);
+        bottomPane.getChildren().add(isFinal);
+        isFinalText = new Label("");
+        isFinalText.setVisible(false);
+        bottomPane.getChildren().add(isFinalText);
+
+
         Button back = new Button("Back");
         bottomPane.getChildren().add(back);
         back.setOnAction(this::backAction);
-        //TODO mettre dans le coin en bas à droite
+        //TODO mettre le bouton back dans un coin
 
         HBox topPane = new HBox();
         topPane.setPadding(new Insets(10, 10, 10, 0));
@@ -188,7 +200,10 @@ public class View extends BorderPane {
             } catch (IllegalSyntax ex) {
                 this.drawError(ex.getMessage());
             }
-
+            this.isFinalText.setVisible(false);
+            this.isFinal.setText("Check if the configuration is final");
+            this.isFinal.setVisible(true);
+            this.isFinal.setManaged(true);
         }
     }
 
@@ -228,6 +243,10 @@ public class View extends BorderPane {
         this.anim.draw(this.ctx);
         legend = true;
         drawInfo();
+        this.isFinalText.setVisible(false);
+        this.isFinal.setText("Check if the configuration is final");
+        this.isFinal.setVisible(true);
+        this.isFinal.setManaged(true);
     }
 
     private void changeAction(ActionEvent e) {
@@ -276,6 +295,32 @@ public class View extends BorderPane {
         if(this.anim != null){
             this.anim.setDrawNames(names.isSelected());
             this.anim.draw(ctx);
+        }
+    }
+
+    private void isFinalAction(ActionEvent e){
+        if(pop != null){
+            isFinal.setManaged(false);
+            isFinal.setVisible(false);
+            isFinalText.setVisible(true);
+            isFinalText.setText("Calculating...");
+            Configuration conf = pop.getConfiguration();
+            Graph graph = new Graph(pop.getProtocol(), conf);
+            if(graph.isFinal(conf)){
+                isFinalText.setText("The configuration is final!");
+                if(this.pop.allYes()){
+                    isFinalText.setStyle("-fx-background-color: rgb(100, 255, 100)");
+                } else {
+                    isFinalText.setStyle("-fx-background-color: red");
+                }
+                //System.out.println("FINAL");
+            } else {
+                isFinal.setText("The configuration is not final! Click to check again");
+                isFinal.setManaged(true);
+                isFinal.setVisible(true);
+                isFinalText.setVisible(false);
+                //System.out.println("NOT FINAL");
+            }
         }
     }
 

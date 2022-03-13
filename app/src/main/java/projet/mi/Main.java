@@ -25,8 +25,8 @@ public class Main {
         System.out.println(g.isFinal(conf));
         System.out.println(g);*/
 
-        Stats s = new Stats(p);
-        s.statsForDifferentSizes(2, 10,1,10000, 10000);
+        //Stats s = new Stats(p);
+        //s.statsForDifferentSizes(2, 10,1,10000, 10000);
 
         Menu.launch(Menu.class, args);
     }
