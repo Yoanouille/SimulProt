@@ -15,3 +15,4 @@ RULES:
     0 1 -> 1 1
 YES: 1
 NO: A B C D AB CD 0
+CONF: A=5 B=5 C=5 D=5

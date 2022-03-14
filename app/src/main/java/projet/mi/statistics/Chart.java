@@ -2,9 +2,12 @@ package projet.mi.statistics;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
+import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import projet.mi.model.Protocol;
 
 import java.util.LinkedList;
@@ -47,7 +50,37 @@ public class Chart {
         draw(canvas.getGraphicsContext2D(), st);
     }
 
-    public void drawAxes(GraphicsContext ctx, double x, double y, double width, double height) {
+    public void drawHorizGradLine(GraphicsContext ctx, double x, double y, double size, double label) {
+        ctx.beginPath();
+        ctx.moveTo(x - size / 2, y);
+        ctx.lineTo(x + size / 2, y);
+        ctx.stroke();
+        ctx.setFill(Color.GREEN);
+        ctx.fillText(String.valueOf((int)label), x - size, y);
+    }
+
+    public void drawVertGradLine(GraphicsContext ctx, double x, double y, double size, double label) {
+        System.out.println(x + " " + y);
+        ctx.beginPath();
+        ctx.moveTo(x, y - size / 2);
+        ctx.lineTo(x, y + size / 2);
+        ctx.stroke();
+        ctx.setFill(Color.GREEN);
+        ctx.fillText(String.valueOf((int)label), x, y + size/2 + 3);
+    }
+
+    public void drawGraduation(GraphicsContext ctx, double x, double y, double width, double height, double nbGradX, double nbGradY, double maxX, double maxY) {
+        //Horiz Grad
+        for(int i = 0; i < nbGradX; i++) {
+            drawVertGradLine(ctx, x + (i * width / nbGradX), y + height, 30, i * maxX / nbGradX);
+        }
+        //Vert Grad
+        for(int i = 0; i < nbGradY; i++) {
+            drawHorizGradLine(ctx,  x, y + height - (i * height / nbGradY),30, i * maxY / nbGradY);
+        }
+    }
+
+    public void drawAxes(GraphicsContext ctx, double x, double y, double width, double height, double maxX, double maxY) {
         ctx.setStroke(Color.BLACK);
         ctx.setLineWidth(7);
 
@@ -56,6 +89,10 @@ public class Chart {
         ctx.lineTo(x, y + height);
         ctx.lineTo(x + width, y + height);
         ctx.stroke();
+
+        ctx.setStroke(Color.BLACK);
+        ctx.setLineWidth(3);
+        drawGraduation(ctx, x, y, width, height, maxX, 10, maxX, maxY);
     }
 
     public void initialize() {
@@ -64,7 +101,7 @@ public class Chart {
         int step = 1;
 
         t = new Thread(() -> {
-            stats.statsForDifferentSizes(2, 100,1,10000, 10000, (s) -> {
+            stats.statsForDifferentSizes(2, 100,1,10000, 100, (s) -> {
                 Platform.runLater(() -> draw(canvas.getGraphicsContext2D(), s));
             });
         });
@@ -100,12 +137,12 @@ public class Chart {
 
     public void drawGraph(GraphicsContext ctx, double x, double y, double width, double height, LinkedList<Stat> st) {
 
-        drawAxes(ctx, x, y, width, height);
-
         if(st != null) {
             //double maxY = stats.getMaxAvg();
             double maxY = stats.getMaxValues(avg, min, max, median);
             double maxX = st.size() - 1;
+
+            drawAxes(ctx, x, y, width, height, maxX, maxY);
 
             ctx.setLineWidth(3);
 
@@ -131,9 +168,13 @@ public class Chart {
     public void draw(GraphicsContext ctx, LinkedList<Stat> st) {
         this.st = st;
 
+        ctx.setFont(new Font(ctx.getFont().getName(), 15));
+        ctx.setTextAlign(TextAlignment.CENTER);
+        ctx.setTextBaseline(VPos.CENTER);
+
         ctx.setFill(Color.WHITE);
         ctx.clearRect(0,0,canvas.getWidth(),canvas.getHeight());
 
-        drawGraph(ctx, 50, 50, canvas.getWidth() - 100, canvas.getHeight() - 100, st);
+        drawGraph(ctx, 75, 75, canvas.getWidth() - 150, canvas.getHeight() - 150, st);
     }
 }

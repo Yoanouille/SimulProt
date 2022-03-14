@@ -27,3 +27,5 @@ RULES:
 	A3 B0 -> A3 B3
 	A3 B1 -> A3 B3
 	A3 B2 -> A3 B3
+
+CONF: A1=0
