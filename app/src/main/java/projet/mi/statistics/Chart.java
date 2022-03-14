@@ -50,33 +50,37 @@ public class Chart {
         draw(canvas.getGraphicsContext2D(), st);
     }
 
-    public void drawHorizGradLine(GraphicsContext ctx, double x, double y, double size, double label) {
+    public void drawHorizGradLine(GraphicsContext ctx, double x, double y, double size, double label, boolean visible) {
         ctx.beginPath();
         ctx.moveTo(x - size / 2, y);
         ctx.lineTo(x + size / 2, y);
         ctx.stroke();
-        ctx.setFill(Color.GREEN);
-        ctx.fillText(String.valueOf((int)label), x - size, y);
+        if(visible) {
+            ctx.setFill(Color.GREEN);
+            ctx.fillText(String.valueOf((int) label), x - size - 10, y);
+        }
     }
 
-    public void drawVertGradLine(GraphicsContext ctx, double x, double y, double size, double label) {
+    public void drawVertGradLine(GraphicsContext ctx, double x, double y, double size, double label, boolean visible) {
         System.out.println(x + " " + y);
         ctx.beginPath();
         ctx.moveTo(x, y - size / 2);
         ctx.lineTo(x, y + size / 2);
         ctx.stroke();
-        ctx.setFill(Color.GREEN);
-        ctx.fillText(String.valueOf((int)label), x, y + size/2 + 3);
+        if(visible) {
+            ctx.setFill(Color.GREEN);
+            ctx.fillText(String.valueOf((int) label), x, y + size / 2 + 3);
+        }
     }
 
     public void drawGraduation(GraphicsContext ctx, double x, double y, double width, double height, double nbGradX, double nbGradY, double maxX, double maxY) {
         //Horiz Grad
         for(int i = 0; i < nbGradX; i++) {
-            drawVertGradLine(ctx, x + (i * width / nbGradX), y + height, 30, i * maxX / nbGradX);
+            drawVertGradLine(ctx, x + (i * width / nbGradX), y + height, 30, i * maxX / nbGradX, true);
         }
         //Vert Grad
         for(int i = 0; i < nbGradY; i++) {
-            drawHorizGradLine(ctx,  x, y + height - (i * height / nbGradY),30, i * maxY / nbGradY);
+            drawHorizGradLine(ctx,  x, y + height - (i * height / nbGradY),30, i * maxY / nbGradY, true);
         }
     }
 
@@ -92,7 +96,7 @@ public class Chart {
 
         ctx.setStroke(Color.BLACK);
         ctx.setLineWidth(3);
-        drawGraduation(ctx, x, y, width, height, maxX, 10, maxX, maxY);
+        drawGraduation(ctx, x, y, width, height, maxX%10 + 10,20, maxX, maxY);
     }
 
     public void initialize() {
