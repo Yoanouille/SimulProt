@@ -374,6 +374,7 @@ public class View extends BorderPane {
     }
 
     public void backAction(ActionEvent e){
+        if(anim != null) this.anim.stop();
         this.menu.changeScene("menu");
     }
 }

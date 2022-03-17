@@ -2,6 +2,7 @@ package projet.mi.statistics;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -18,15 +19,18 @@ public class Chart {
     private Thread t;
     private LinkedList<Stat> st;
 
-    private boolean avg = false;
-    private boolean min = false;
-    private boolean max = false;
-    private boolean median = false;
+    private boolean avg;
+    private boolean min;
+    private boolean max;
+    private boolean median;
 
-    public Chart(Canvas c, Protocol p) {
+    public Chart(Canvas c, Protocol p, boolean avg, boolean min, boolean max, boolean median) {
         this.canvas = c;
         this.stats = new Stats(p);
-
+        this.avg = avg;
+        this.min = min;
+        this.max = max;
+        this.median = median;
         initialize();
     }
 
@@ -52,41 +56,42 @@ public class Chart {
 
     public void drawHorizGradLine(GraphicsContext ctx, double x, double y, double size, double label, boolean visible) {
         ctx.beginPath();
-        ctx.moveTo(x - size / 2, y);
-        ctx.lineTo(x + size / 2, y);
+        ctx.moveTo(x - size, y);
+        ctx.lineTo(x, y);
         ctx.stroke();
+        ctx.setTextAlign(TextAlignment.RIGHT);
         if(visible) {
-            ctx.setFill(Color.GREEN);
-            ctx.fillText(String.valueOf((int) label), x - size - 10, y);
+            ctx.setFill(Color.BLACK);
+            ctx.fillText(String.valueOf((int) label), x - size - 8, y);
         }
     }
 
     public void drawVertGradLine(GraphicsContext ctx, double x, double y, double size, double label, boolean visible) {
-        System.out.println(x + " " + y);
         ctx.beginPath();
-        ctx.moveTo(x, y - size / 2);
-        ctx.lineTo(x, y + size / 2);
+        ctx.moveTo(x, y);
+        ctx.lineTo(x, y + size);
         ctx.stroke();
+        ctx.setTextAlign(TextAlignment.CENTER);
         if(visible) {
-            ctx.setFill(Color.GREEN);
-            ctx.fillText(String.valueOf((int) label), x, y + size / 2 + 3);
+            ctx.setFill(Color.BLACK);
+            ctx.fillText(String.valueOf((int) label), x, y + size + 10);
         }
     }
 
     public void drawGraduation(GraphicsContext ctx, double x, double y, double width, double height, double nbGradX, double nbGradY, double maxX, double maxY) {
         //Horiz Grad
         for(int i = 0; i < nbGradX; i++) {
-            drawVertGradLine(ctx, x + (i * width / nbGradX), y + height, 30, i * maxX / nbGradX, true);
+            drawVertGradLine(ctx, x + (i * width / nbGradX), y + height, 15, i * maxX / nbGradX, true);
         }
         //Vert Grad
         for(int i = 0; i < nbGradY; i++) {
-            drawHorizGradLine(ctx,  x, y + height - (i * height / nbGradY),30, i * maxY / nbGradY, true);
+            drawHorizGradLine(ctx,  x, y + height - (i * height / nbGradY),15, i * maxY / nbGradY, true);
         }
     }
 
     public void drawAxes(GraphicsContext ctx, double x, double y, double width, double height, double maxX, double maxY) {
         ctx.setStroke(Color.BLACK);
-        ctx.setLineWidth(7);
+        ctx.setLineWidth(1);
 
         ctx.beginPath();
         ctx.moveTo(x,y);
@@ -95,7 +100,7 @@ public class Chart {
         ctx.stroke();
 
         ctx.setStroke(Color.BLACK);
-        ctx.setLineWidth(3);
+        ctx.setLineWidth(1);
         drawGraduation(ctx, x, y, width, height, maxX%10 + 10,20, maxX, maxY);
     }
 
@@ -173,7 +178,6 @@ public class Chart {
         this.st = st;
 
         ctx.setFont(new Font(ctx.getFont().getName(), 15));
-        ctx.setTextAlign(TextAlignment.CENTER);
         ctx.setTextBaseline(VPos.CENTER);
 
         ctx.setFill(Color.WHITE);

@@ -60,24 +60,28 @@ public class MenuStat extends BorderPane {
         bottomPane.getChildren().add(back);
 
         avg = new CheckBox("avg");
+        avg.setSelected(true);
         avg.setOnAction((e) -> {
             if(chart != null) chart.setAvg(avg.isSelected());
         });
         bottomPane.getChildren().add(avg);
 
         min = new CheckBox("min");
+        min.setSelected(true);
         min.setOnAction((e) -> {
             if(chart != null) chart.setMin(min.isSelected());
         });
         bottomPane.getChildren().add(min);
 
         max = new CheckBox("max");
+        max.setSelected(true);
         max.setOnAction((e) -> {
             if(chart != null) chart.setMax(max.isSelected());
         });
         bottomPane.getChildren().add(max);
 
         median = new CheckBox("median");
+        median.setSelected(true);
         median.setOnAction((e) -> {
             if(chart != null) chart.setMedian(median.isSelected());
         });
@@ -106,7 +110,7 @@ public class MenuStat extends BorderPane {
             try {
                 protocol = new Protocol(file.getPath());
                 if(chart != null) chart.stop();
-                chart = new Chart(canvas, protocol);
+                chart = new Chart(canvas, protocol, avg.isSelected(), min.isSelected(), max.isSelected(), median.isSelected());
                 chart.draw(canvas.getGraphicsContext2D(), null);
             } catch (IllegalSyntax ex) {
                 //DrawError !
