@@ -180,8 +180,7 @@ public class MenuStat extends BorderPane {
 
     private void drawError(String error) {
         GraphicsContext ctx = canvas.getGraphicsContext2D();
-        ctx.setFill(Color.WHITE);
-        ctx.fillRect(0,0,width, height);
+        ctx.clearRect(0,0,width, height);
         ctx.setFont(new Font(ctx.getFont().getName(), 20));
         ctx.setTextBaseline(VPos.CENTER);
         ctx.setTextAlign(TextAlignment.CENTER);
