@@ -38,6 +38,7 @@ public class Menu extends Application {
                 primaryStage.setScene(simulateScene);
                 break;
             case "stat":
+                primaryStage.setWidth(1200);
                 menuStat = new MenuStat(this);
                 statScene = new Scene(menuStat);
                 primaryStage.setScene(statScene);
