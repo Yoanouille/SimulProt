@@ -147,7 +147,7 @@ public class MenuStat extends BorderPane {
 
         Rectangle rect4 = new Rectangle(50,3);
         rect4.setFill(Color.PURPLE);
-        Label label4 = new Label("Average");
+        Label label4 = new Label("Median");
         grid.addRow(3, rect4, label4, median);
     }
 

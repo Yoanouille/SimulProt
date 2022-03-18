@@ -80,12 +80,16 @@ public class Chart {
 
     public void drawGraduation(GraphicsContext ctx, double x, double y, double width, double height, double nbGradX, double nbGradY, double maxX, double maxY) {
         //Horiz Grad
-        for(int i = 0; i < nbGradX; i++) {
-            drawVertGradLine(ctx, x + (i * width / nbGradX), y + height, 15, i * maxX / nbGradX, true);
+        double l =0.5*Math.pow(10, Math.floor(Math.log10(Math.max(1, maxX-10))));
+        double step = (Math.ceil(Math.ceil(maxX/nbGradX)/l)*l);
+        for(double i = 0; i < maxX; i += step) {
+            drawVertGradLine(ctx, x + i*width/maxX, y + height, 15, i, true);
         }
         //Vert Grad
-        for(int i = 0; i < nbGradY; i++) {
-            drawHorizGradLine(ctx,  x, y + height - (i * height / nbGradY),15, i * maxY / nbGradY, true);
+        l =0.5*Math.pow(10, Math.floor(Math.log10(Math.max(1, maxY-10))));
+        step = (Math.ceil(Math.ceil(maxY/nbGradY)/l)*l);
+        for(double i = 0; i < maxY; i += step) {
+            drawHorizGradLine(ctx,  x, y + height - i*height/maxY,15, i, true);
         }
     }
 
@@ -101,7 +105,7 @@ public class Chart {
 
         ctx.setStroke(Color.BLACK);
         ctx.setLineWidth(1);
-        drawGraduation(ctx, x, y, width, height, maxX%10 + 10,20, maxX, maxY);
+        drawGraduation(ctx, x, y, width, height, 10,10, maxX, maxY);
     }
 
     public void initialize() {
@@ -133,11 +137,9 @@ public class Chart {
 
     public void drawOneGraph(GraphicsContext ctx, double x, double y, double width, double height, LinkedList<Stat> st, double maxX, double maxY, String type) {
         ctx.beginPath();
-        double x0 = (0 / maxX) * width + x;
-        double y0 = (1.0 - st.get(0).getAvg() / maxY) * height + y;
-        ctx.moveTo(x0, y0);
-        for (int i = 1; i < st.size(); i++) {
-            double xp = (i / maxX) * width + x;
+        ctx.moveTo(x, y+height);
+        for (int i = 0; i < st.size(); i++) {
+            double xp = (st.get(i).getSize() / maxX) * width + x;
             double yp = (1.0 - getValue(i, type, st) / maxY) * height + y;
             ctx.lineTo(xp, yp);
         }
@@ -149,7 +151,7 @@ public class Chart {
         if(st != null) {
             //double maxY = stats.getMaxAvg();
             double maxY = stats.getMaxValues(avg, min, max, median);
-            double maxX = st.size() - 1;
+            double maxX = st.getLast().getSize();
 
             drawAxes(ctx, x, y, width, height, maxX, maxY);
 
