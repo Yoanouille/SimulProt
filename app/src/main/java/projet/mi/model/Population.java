@@ -82,6 +82,15 @@ public class Population {
         this.interact(i, j);
     }
 
+    public void specialInteractions() {
+        int i = (int)(Math.random()*this.agents.length);
+        for(int j = 0; j < this.agents.length; j++) {
+            if(i != j) {
+                this.interact(i,j);
+            }
+        }
+    }
+
     public boolean allYes(){
         for (Agent agent : this.agents) {
             if (!agent.getState().isIn(this.protocol.getYes())) {
