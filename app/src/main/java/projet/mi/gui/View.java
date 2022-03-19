@@ -238,6 +238,7 @@ public class View extends BorderPane {
         }
 
         this.slow.setDisable(true);
+        this.accelerate.setDisable(false);
         if(this.anim != null) {
             this.anim.stop();
             togglePlay.setText("Play");
@@ -265,6 +266,7 @@ public class View extends BorderPane {
     private void speedUpAction(ActionEvent e) {
         if(this.anim != null){
             this.anim.speed();
+            if(this.anim.getSimulationSpeed() == this.anim.getMaxSimulationSpeed()) this.accelerate.setDisable(true);
             if(this.anim.getSimulationSpeed() > 1){
                 this.slow.setDisable(false);
             }
@@ -274,6 +276,7 @@ public class View extends BorderPane {
     private void slowAction(ActionEvent e) {
         if(this.anim != null) {
             this.anim.slow();
+            if(this.anim.getMaxSimulationSpeed() > this.anim.getSimulationSpeed()) this.accelerate.setDisable(false);
             if (this.anim.getSimulationSpeed() == 1) {
                 this.slow.setDisable(true);
             }

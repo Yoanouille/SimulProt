@@ -25,32 +25,16 @@ public class Animation {
     private HashMap<State, Color> colorMap;
     private boolean colorMode;
     private int simulationSpeed;
+    private final int maxSimulationSpeed = (int) Math.pow(2,8);
     private boolean drawNames;
     private Graph graph;
 
     public Animation(Population pop, double width, double height, GraphicsContext ctx){
         this.pop = pop;
-        this.circles = new Circle[pop.size()];
         this.ctx = ctx;
-        Circle.setRadius(Math.sqrt(width*height/(10*3.14*this.circles.length))); // 10 is the percentage of the canvas filled with circles
-        double d = 2*Circle.getRadius();
-        double spd = Circle.getRadius()*5;
-        for(int i = 0; i < this.circles.length; i++){
-            double a = Math.random()*Math.PI*2;
-            this.circles[i] = new Circle(Math.random()*(width-d)+Circle.getRadius(), Math.random()*(height-d)+Circle.getRadius(), spd*Math.cos(a), spd*Math.sin(a));
-            boolean collision;
-            do{
-                collision = false;
-                for(int j = 0; j < i; j++){
-                    if(this.circles[i].collision(this.circles[j])){
-                        this.circles[i].setPos(Math.random()*(width-d)+Circle.getRadius(), Math.random()*(height-d)+Circle.getRadius());
-                        collision = true;
-                    }
-                }
-            }while(collision);
-        }
         this.width = width;
         this.height = height;
+        this.initCircle();
         anim = new AnimationTime();
 
         colorMode = false;
@@ -62,6 +46,10 @@ public class Animation {
             colorMap.put(states[i], Color.hsb(i * 360.0 / states.length, 1.0, 1.0));
         }
         this.simulationSpeed = 1;
+    }
+
+    public int getMaxSimulationSpeed() {
+        return maxSimulationSpeed;
     }
 
     public void boundCollisions() {
@@ -85,6 +73,27 @@ public class Animation {
         }
     }
 
+    public void initCircle() {
+        this.circles = new Circle[pop.size()];
+        Circle.setRadius(Math.sqrt(width*height/(10*3.14*this.circles.length))); // 10 is the percentage of the canvas filled with circles
+        double d = 2*Circle.getRadius();
+        double spd = Circle.getRadius()*5;
+        for(int i = 0; i < this.circles.length; i++){
+            double a = Math.random()*Math.PI*2;
+            this.circles[i] = new Circle(Math.random()*(width-d)+Circle.getRadius(), Math.random()*(height-d)+Circle.getRadius(), spd*Math.cos(a), spd*Math.sin(a));
+            boolean collision;
+            do{
+                collision = false;
+                for(int j = 0; j < i; j++){
+                    if(this.circles[i].collision(this.circles[j])){
+                        this.circles[i].setPos(Math.random()*(width-d)+Circle.getRadius(), Math.random()*(height-d)+Circle.getRadius());
+                        collision = true;
+                    }
+                }
+            }while(collision);
+        }
+    }
+
     public void change() {
         this.colorMode = !this.colorMode;
     }
@@ -103,7 +112,7 @@ public class Animation {
     }
 
     public void speed() {
-        this.simulationSpeed *= 2;
+        if(this.simulationSpeed < this.maxSimulationSpeed) this.simulationSpeed *= 2;
     }
 
     public void slow() {
@@ -259,8 +268,21 @@ public class Animation {
         public void handle(long now){
             double dt = ((double)(now-lastUpdateTime))/1000000000.; //delta time in seconds (now is in nanoseconds)
             //boolean collisionOccurred = false;
-            for(int i = 0; i < simulationSpeed; i++){
-                update(dt);
+
+            if(maxSimulationSpeed == simulationSpeed) {
+                double r = Math.random();
+                if(r > 0.1) {
+                    for (int i = 0; i < maxSimulationSpeed; i++) {
+                        pop.randomInteraction();
+                    }
+                } else {
+                    pop.specialInteractions();
+                }
+                initCircle();
+            } else {
+                for(int i = 0; i < simulationSpeed; i++){
+                    update(dt);
+                }
             }
             /*if(collisionOccurred && (pop.allNo() || pop.allYes())){
                 Configuration conf = pop.getConfiguration();
