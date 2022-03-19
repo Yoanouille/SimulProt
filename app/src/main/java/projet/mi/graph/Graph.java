@@ -70,7 +70,7 @@ public class Graph {
         }
 
         HashSet<Configuration> visited = new HashSet<>();
-        visited.add(conf);
+        //visited.add(conf);
 
         queue = new LinkedList<>();
         queue.add(conf);

@@ -62,6 +62,9 @@ public class View extends BorderPane {
     private boolean legend = true;
 
     private Menu menu;
+    private Graph graph;
+
+
 
     public View(Menu menu) {
         this.menu = menu;
@@ -172,6 +175,8 @@ public class View extends BorderPane {
                 Protocol p = new Protocol(file.getPath());
                 title.setText(p.getTitle());
                 this.pop = new Population(p);
+                Configuration conf = pop.getConfiguration();
+                graph = new Graph(pop.getProtocol(), conf);
 
                 LinkedList<String> options = new LinkedList<>();
                 options.add("Random");
@@ -305,7 +310,6 @@ public class View extends BorderPane {
             isFinalText.setVisible(true);
             isFinalText.setText("Calculating...");
             Configuration conf = pop.getConfiguration();
-            Graph graph = new Graph(pop.getProtocol(), conf);
             if(graph.isFinal(conf)){
                 isFinalText.setText("The configuration is final!");
                 if(this.pop.allYes()){
