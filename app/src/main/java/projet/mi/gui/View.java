@@ -8,6 +8,7 @@ import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -132,6 +133,7 @@ public class View extends BorderPane {
         popSize.setMaxWidth(40);
         popSize.setVisible(false);
         popSize.setOnAction(this::popSizeAction);
+        popSize.addEventFilter(KeyEvent.KEY_TYPED, this::filterText);
         bottomPane.getChildren().add(popSize);
 
         names = new CheckBox("Draw names");
@@ -382,5 +384,19 @@ public class View extends BorderPane {
     public void backAction(ActionEvent e){
         if(anim != null) this.anim.stop();
         this.menu.changeScene("menu");
+    }
+
+    private void filterText(KeyEvent e) {
+        if(!isDigit(e.getCharacter().charAt(0))) {
+            e.consume();
+        }
+    }
+
+    private boolean isDigit(char c) {
+        String digits = "0123456789";
+        for(int i = 0; i < digits.length(); i++) {
+            if(digits.charAt(i) == c) return true;
+        }
+        return false;
     }
 }

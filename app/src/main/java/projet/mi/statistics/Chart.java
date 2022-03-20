@@ -24,13 +24,24 @@ public class Chart {
     private boolean max;
     private boolean median;
 
-    public Chart(Canvas c, Protocol p, boolean avg, boolean min, boolean max, boolean median) {
+    private int maxIteration;
+    private int maxPopSize;
+    private int minPopSize;
+    private int nbSimu;
+    private int step;
+
+    public Chart(Canvas c, Protocol p, boolean avg, boolean min, boolean max, boolean median, int maxIteration, int maxPopSize, int minPopSize, int nbSimu, int step) {
         this.canvas = c;
         this.stats = new Stats(p);
         this.avg = avg;
         this.min = min;
         this.max = max;
         this.median = median;
+        this.maxIteration = maxIteration;
+        this.maxPopSize = maxPopSize;
+        this.minPopSize = minPopSize;
+        this.nbSimu = nbSimu;
+        this.step = step;
         initialize();
     }
 
@@ -109,12 +120,9 @@ public class Chart {
     }
 
     public void initialize() {
-        int minPopSize = 2;
-        int maxPopSize = 10;
-        int step = 1;
 
         t = new Thread(() -> {
-            stats.statsForDifferentSizes(2, 100,1,10000, 100, (s) -> {
+            stats.statsForDifferentSizes(minPopSize, maxPopSize,step,maxIteration, nbSimu, (s) -> {
                 Platform.runLater(() -> draw(canvas.getGraphicsContext2D(), s));
             });
         });
