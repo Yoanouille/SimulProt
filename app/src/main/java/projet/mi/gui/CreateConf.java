@@ -5,6 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -45,7 +46,8 @@ public class CreateConf extends Stage {
                 inputs[i].setMinWidth(40);
                 SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 1000, 0, 1);
                 inputs[i].setValueFactory(valueFactory);
-                //inputs[i].setEditable(true);
+                inputs[i].setEditable(true);
+                inputs[i].getEditor().addEventFilter(KeyEvent.KEY_TYPED, this::filterText);
 
                 root.addRow(i + 1, labels[i], inputs[i]);
 
@@ -73,22 +75,17 @@ public class CreateConf extends Stage {
             save.show();
         }
 
+        private void filterText(KeyEvent e) {
+            if(!isDigit(e.getCharacter().charAt(0))) {
+                e.consume();
+            }
+        }
+
         private boolean isDigit(char c) {
             String digits = "0123456789";
             for(int i = 0; i < digits.length(); i++) {
                 if(digits.charAt(i) == c) return true;
             }
             return false;
-        }
-
-        private String removeNotNumber(String s) {
-            String rep = "";
-            for(int i = 0; i < s.length(); i++) {
-                if(isDigit(s.charAt(i))) {
-                    rep += s.charAt(i);
-                }
-            }
-            if(rep.length() == 0) return "0";
-            else return rep;
         }
 }
