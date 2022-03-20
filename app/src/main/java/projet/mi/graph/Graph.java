@@ -9,18 +9,18 @@ import java.util.*;
 public class Graph {
     private Protocol protocol;
     private HashMap<Configuration, ArrayList<Configuration>> graph;
-    private LinkedList<Configuration> queue;
+    //private LinkedList<Configuration> queue;
 
-    public Graph(Protocol p, Configuration conf){
+    public Graph(Protocol p){
         protocol = p;
         graph = new HashMap<>();
-        queue = new LinkedList<>();
-        queue.add(conf);
+        //queue = new LinkedList<>();
+        //queue.add(conf);
         //graph.put(conf, new ArrayList<>());
 
     }
 
-    public void step(){
+    public void step(LinkedList<Configuration> queue){
         Configuration conf = queue.removeFirst();
         ArrayList<Configuration> nexts = new ArrayList<>();
         for(Rule r : protocol.getRules()){
@@ -36,13 +36,15 @@ public class Graph {
         }
     }
 
-    public void createGraph(){
+    public void createGraph(Configuration conf){
+        LinkedList<Configuration> queue = new LinkedList<>();
+        queue.add(conf);
         while(!queue.isEmpty()){
-            step();
+            step(queue);
         }
     }
 
-    public void step2(HashSet<Configuration> visited){
+    public void step2(HashSet<Configuration> visited, LinkedList<Configuration> queue){
         Configuration conf = queue.removeFirst();
         ArrayList<Configuration> nexts = new ArrayList<>();
 
@@ -72,13 +74,50 @@ public class Graph {
         HashSet<Configuration> visited = new HashSet<>();
         //visited.add(conf);
 
-        queue = new LinkedList<>();
+        LinkedList<Configuration> queue = new LinkedList<>();
         queue.add(conf);
         while(!queue.isEmpty()){
             if(!queue.getFirst().allInSet(set)){
                 return false;
             }
-            step2(visited);
+            step2(visited, queue);
+        }
+        return true;
+    }
+
+    public String hasFinalSon(Configuration conf){
+        HashSet<Configuration> visited = new HashSet<>();
+        LinkedList<Configuration> queue = new LinkedList<>();
+        queue.add(conf);
+        while(!queue.isEmpty()){
+            Configuration c = queue.getFirst();
+            if(isFinal(c)){
+                if(c.allInSet(protocol.getYes())){
+                    return "yes";
+                } else {
+                    return "no";
+                }
+            }
+            step2(visited, queue);
+        }
+        return "noFinalSon";
+    }
+
+    public boolean isWellDefined(Configuration conf){
+        HashSet<Configuration> visited = new HashSet<>();
+        LinkedList<Configuration> queue = new LinkedList<>();
+        String endingConf = "";
+        queue.add(conf);
+        while(!queue.isEmpty()){
+            String hasFinalSon = hasFinalSon(queue.getFirst());
+            if(hasFinalSon.equals("noFinalSon")){
+                return false;
+            } else if(endingConf.equals("")){
+                endingConf = hasFinalSon;
+            } else if(!endingConf.equals(hasFinalSon)){
+                return false;
+            }
+            step2(visited, queue);
         }
         return true;
     }

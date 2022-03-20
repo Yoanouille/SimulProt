@@ -175,8 +175,7 @@ public class View extends BorderPane {
                 Protocol p = new Protocol(file.getPath());
                 title.setText(p.getTitle());
                 this.pop = new Population(p);
-                Configuration conf = pop.getConfiguration();
-                graph = new Graph(pop.getProtocol(), conf);
+                graph = new Graph(pop.getProtocol());
 
                 LinkedList<String> options = new LinkedList<>();
                 options.add("Random");

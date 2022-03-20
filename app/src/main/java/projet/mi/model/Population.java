@@ -127,7 +127,7 @@ public class Population {
             this.randomInteraction();
             if(this.allYes() || this.allNo()){
                 Configuration conf = getConfiguration();
-                Graph g = new Graph(protocol, conf);
+                Graph g = new Graph(protocol);
                 if(g.isFinal(conf)){
                     break;
                 }
