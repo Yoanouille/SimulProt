@@ -13,7 +13,7 @@ public class Main {
         Protocol p = new Protocol("../examples/notWellDefined.pp");
         System.out.print(p);
         //String[] startingStates = {"Y", "Y", "Y", "N", "N"};
-        String[] startingStates = {"0", "1", "1", "1"};
+        String[] startingStates = {"0", "0", "1", "1"};
         Population pop = new Population(p, startingStates);
         Configuration conf = pop.getConfiguration();
         Graph g = new Graph(p);

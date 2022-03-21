@@ -9,8 +9,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.event.ActionEvent;
 
-import javax.swing.*;
-
 
 public class FirstMenu extends BorderPane {
 
@@ -35,15 +33,15 @@ public class FirstMenu extends BorderPane {
         HBox.setMargin(statistics, new Insets(10, 10, 10, 10));
         statistics.setOnAction(this::statAction);
 
-        Button checkProtocol = new Button("check protocol");
+        /*Button checkProtocol = new Button("check protocol");
         checkProtocol.setStyle(buttonFont);
-        HBox.setMargin(checkProtocol, new Insets(10, 10, 10, 10));
+        HBox.setMargin(checkProtocol, new Insets(10, 10, 10, 10));*/
 
 
         HBox box = new HBox();
         box.getChildren().add(simulate);
         box.getChildren().add(statistics);
-        box.getChildren().add(checkProtocol);
+        //box.getChildren().add(checkProtocol);
         box.setAlignment(Pos.CENTER);
 
         VBox vbox = new VBox();

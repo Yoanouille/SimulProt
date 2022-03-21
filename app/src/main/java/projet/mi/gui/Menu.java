@@ -25,6 +25,8 @@ public class Menu extends Application {
         primaryStage.setScene(menuScene);
         primaryStage.setMinWidth(1050);
         primaryStage.setMinHeight(600);
+        primaryStage.setWidth(1150);
+        primaryStage.setHeight(700);
         primaryStage.show();
     }
 

@@ -25,7 +25,7 @@ public class Animation {
     private HashMap<State, Color> colorMap;
     private boolean colorMode;
     private int simulationSpeed;
-    private final int maxSimulationSpeed = (int) Math.pow(2,8);
+    private final int maxSimulationSpeed = (int) Math.pow(2,7);
     private boolean drawNames;
     private Graph graph;
 

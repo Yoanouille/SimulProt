@@ -45,6 +45,7 @@ public class View extends BorderPane {
     private CheckBox names;
     private Button isFinal;
     private Label isFinalText;
+    private Button isWellDefined;
 
 
     private Canvas canvas;
@@ -141,12 +142,16 @@ public class View extends BorderPane {
         names.setOnAction(this::namesAction);
         bottomPane.getChildren().add(names);
 
-        isFinal = new Button("Check if the configuration is final");
+        isFinal = new Button("is final ?");
         isFinal.setOnAction(this::isFinalAction);
         bottomPane.getChildren().add(isFinal);
         isFinalText = new Label("");
         isFinalText.setVisible(false);
         bottomPane.getChildren().add(isFinalText);
+
+        isWellDefined = new Button("is well defined ?");
+        isWellDefined.setOnAction(this::isWellDefinedAction);
+        bottomPane.getChildren().add(isWellDefined);
 
 
         Button back = new Button("Back");
@@ -207,7 +212,7 @@ public class View extends BorderPane {
                 this.drawError(ex.getMessage());
             }
             this.isFinalText.setVisible(false);
-            this.isFinal.setText("Check if the configuration is final");
+            this.isFinal.setText("is final ?");
             this.isFinal.setVisible(true);
             this.isFinal.setManaged(true);
         }
@@ -251,7 +256,7 @@ public class View extends BorderPane {
         legend = true;
         drawInfo();
         this.isFinalText.setVisible(false);
-        this.isFinal.setText("Check if the configuration is final");
+        this.isFinal.setText("is final ?");
         this.isFinal.setVisible(true);
         this.isFinal.setManaged(true);
     }
@@ -323,11 +328,23 @@ public class View extends BorderPane {
                 }
                 //System.out.println("FINAL");
             } else {
-                isFinal.setText("The configuration is not final! Click to check again");
+                isFinal.setText("Not final! Click to check again");
                 isFinal.setManaged(true);
                 isFinal.setVisible(true);
                 isFinalText.setVisible(false);
                 //System.out.println("NOT FINAL");
+            }
+        }
+    }
+
+    private void isWellDefinedAction(ActionEvent actionEvent) {
+        if(pop != null){
+            Configuration conf = pop.getConfiguration();
+            if(graph == null) graph = new Graph(pop.getProtocol());
+            if(graph.isWellDefined(conf)){
+                isWellDefined.setText("Well defined! click to check again");
+            } else {
+                isWellDefined.setText("Not well defined! click to check again");
             }
         }
     }
