@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
@@ -32,20 +33,19 @@ import java.util.LinkedList;
 
 public class View extends BorderPane {
 
-    private Button select;
     private Button togglePlay;
     private Button reset;
     private Button accelerate;
     private Button slow;
-    private Button change;
-    private Button changeLegend;
+    private MenuItem changeLegendItem;
     private ComboBox<String> configurations;
     private TextField popSize;
     private Label title;
-    private CheckBox names;
+    private CheckMenuItem namesItem;
     private Button isFinal;
     private Label isFinalText;
     private Button isWellDefined;
+    private MenuBar menuBar;
 
 
     private Canvas canvas;
@@ -89,16 +89,21 @@ public class View extends BorderPane {
         legendCtx.closePath();
         legendCtx.stroke();*/
 
-        HBox centralPane = new HBox();
-        centralPane.getChildren().add(scrollPane);
-        centralPane.getChildren().add(canvas);
+        VBox centralPane = new VBox(10);
+        HBox hb = new HBox();
+
+        title = new Label("You have to import your protocol !");
+        title.setFont(new Font(30));
+        centralPane.setAlignment(Pos.CENTER);
+        centralPane.getChildren().add(title);
+
+        hb.getChildren().add(scrollPane);
+        hb.getChildren().add(canvas);
+
+        centralPane.getChildren().add(hb);
 
 
         HBox bottomPane = new HBox();
-
-        select = new Button("Import");
-        select.setOnAction(this::selectBrowse);
-        bottomPane.getChildren().add(select);
 
         reset = new Button("Reset");
         reset.setOnAction(this::resetAction);
@@ -117,14 +122,6 @@ public class View extends BorderPane {
         slow.setDisable(true);
         bottomPane.getChildren().add(slow);
 
-        change = new Button("Change");
-        change.setOnAction(this::changeAction);
-        bottomPane.getChildren().add(change);
-
-        changeLegend = new Button("Show Rules");
-        changeLegend.setOnAction(this::changeLegendRule);
-        bottomPane.getChildren().add(changeLegend);
-
         configurations = new ComboBox<>();
         configurations.setOnAction(this::configurationAction);
         configurations.setVisible(false);
@@ -137,10 +134,6 @@ public class View extends BorderPane {
         popSize.addEventFilter(KeyEvent.KEY_TYPED, this::filterText);
         bottomPane.getChildren().add(popSize);
 
-        names = new CheckBox("Draw names");
-        names.setSelected(true);
-        names.setOnAction(this::namesAction);
-        bottomPane.getChildren().add(names);
 
         isFinal = new Button("is final ?");
         isFinal.setOnAction(this::isFinalAction);
@@ -159,14 +152,32 @@ public class View extends BorderPane {
         back.setOnAction(this::backAction);
         //TODO mettre le bouton back dans un coin
 
-        HBox topPane = new HBox();
-        topPane.setPadding(new Insets(10, 10, 10, 0));
-        title = new Label("You have to import your protocol !");
-        title.setFont(new Font(30));
-        topPane.getChildren().add(title);
-        topPane.setAlignment(Pos.CENTER);
+        menuBar = new MenuBar();
 
-        this.setTop(topPane);
+        javafx.scene.control.Menu fileMenu = new javafx.scene.control.Menu("File");
+        MenuItem importItem = new MenuItem("import");
+        fileMenu.getItems().add(importItem);
+        importItem.setOnAction(this::selectBrowse);
+
+        javafx.scene.control.Menu viewMenu = new javafx.scene.control.Menu("View");
+
+        MenuItem changeColorsItem = new MenuItem("Change the colors");
+        changeColorsItem.setOnAction(this::changeAction);
+
+        changeLegendItem = new MenuItem("Show the rules");
+        changeLegendItem.setOnAction(this::changeLegendRule);
+
+        namesItem = new CheckMenuItem("Draw the names");
+        namesItem.setSelected(true);
+        namesItem.setOnAction(this::namesAction);
+
+        viewMenu.getItems().addAll(changeColorsItem, changeLegendItem, namesItem);
+
+
+        menuBar.getMenus().addAll(fileMenu, viewMenu);
+
+
+        this.setTop(menuBar);
         this.setCenter(centralPane);
         this.setBottom(bottomPane);
     }
@@ -204,9 +215,9 @@ public class View extends BorderPane {
                     running = false;
                 }
                 this.anim = new Animation(this.pop, this.width, this.height, this.ctx);
-                this.anim.setDrawNames(names.isSelected());
+                this.anim.setDrawNames(namesItem.isSelected());
                 this.anim.draw(this.ctx);
-                legend = true;
+                //legend = true;
                 drawInfo();
             } catch (IllegalSyntax ex) {
                 this.drawError(ex.getMessage());
@@ -251,9 +262,9 @@ public class View extends BorderPane {
             running = false;
         }
         this.anim = new Animation(this.pop, this.width, this.height, this.ctx);
-        this.anim.setDrawNames(names.isSelected());
+        this.anim.setDrawNames(namesItem.isSelected());
         this.anim.draw(this.ctx);
-        legend = true;
+        //legend = true;
         drawInfo();
         this.isFinalText.setVisible(false);
         this.isFinal.setText("is final ?");
@@ -307,7 +318,7 @@ public class View extends BorderPane {
 
     private void namesAction(ActionEvent e){
         if(this.anim != null){
-            this.anim.setDrawNames(names.isSelected());
+            this.anim.setDrawNames(namesItem.isSelected());
             this.anim.draw(ctx);
         }
     }
@@ -387,8 +398,8 @@ public class View extends BorderPane {
 
     private void changeLegendRule(ActionEvent e) {
         if(this.pop == null) return;
-        if(legend) changeLegend.setText("Show Legends");
-        else changeLegend.setText("Show Rules");
+        if(legend) changeLegendItem.setText("Show the legend");
+        else changeLegendItem.setText("Show the rules");
         legend = !legend;
         drawInfo();
     }
