@@ -12,11 +12,11 @@ import javafx.event.ActionEvent;
 
 public class FirstMenu extends BorderPane {
 
-    private Menu menu;
+    private MenuStart menuStart;
 
 
-    public FirstMenu(Menu menu){
-        this.menu = menu;
+    public FirstMenu(MenuStart menuStart){
+        this.menuStart = menuStart;
 
         Label title = new Label("Population Protocols");
         title.setStyle("-fx-font : 32 Ubuntu;");
@@ -54,9 +54,9 @@ public class FirstMenu extends BorderPane {
     }
 
     public void simulateAction(ActionEvent e){
-        this.menu.changeScene("simulate");
+        this.menuStart.changeScene("simulate");
     }
     public void statAction(ActionEvent e) {
-        this.menu.changeScene("stat");
+        this.menuStart.changeScene("stat");
     }
 }

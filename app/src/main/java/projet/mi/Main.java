@@ -3,10 +3,9 @@ package projet.mi;
 import projet.mi.exception.IllegalSyntax;
 import projet.mi.graph.Configuration;
 import projet.mi.graph.Graph;
-import projet.mi.gui.Menu;
+import projet.mi.gui.MenuStart;
 import projet.mi.model.Population;
 import projet.mi.model.Protocol;
-import projet.mi.statistics.Stats;
 
 public class Main {
     public static void main(String[] args) throws IllegalSyntax {
@@ -35,6 +34,6 @@ public class Main {
         //Stats s = new Stats(p);
         //s.statsForDifferentSizes(2, 10,1,10000, 10000, (st) -> {});
 
-        Menu.launch(Menu.class, args);
+        MenuStart.launch(MenuStart.class, args);
     }
 }

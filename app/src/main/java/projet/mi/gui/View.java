@@ -1,8 +1,6 @@
 package projet.mi.gui;
 
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
@@ -25,7 +23,6 @@ import projet.mi.model.Protocol;
 import projet.mi.animation.Animation;
 import projet.mi.model.State;
 
-import javax.swing.*;
 import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -38,14 +35,16 @@ public class View extends BorderPane {
     private Button accelerate;
     private Button slow;
     private MenuItem changeLegendItem;
-    private ComboBox<String> configurations;
-    private TextField popSize;
     private Label title;
     private CheckMenuItem namesItem;
     private Button isFinal;
     private Label isFinalText;
     private Button isWellDefined;
     private MenuBar menuBar;
+
+    private Menu chooseConf;
+    private MenuItem random;
+    private MenuItem createConf;
 
 
     private Canvas canvas;
@@ -63,13 +62,13 @@ public class View extends BorderPane {
     private boolean running = false;
     private boolean legend = true;
 
-    private Menu menu;
+    private MenuStart menuStart;
     private Graph graph;
 
 
 
-    public View(Menu menu) {
-        this.menu = menu;
+    public View(MenuStart menuStart) {
+        this.menuStart = menuStart;
 
         this.canvas = new Canvas(this.width, this.height);
         this.ctx = this.canvas.getGraphicsContext2D();
@@ -80,14 +79,6 @@ public class View extends BorderPane {
         this.legendCanvas = new Canvas(220, 500);
         this.legendCtx = this.legendCanvas.getGraphicsContext2D();
         scrollPane.setContent(legendCanvas);
-        /*legendCtx.beginPath();
-        legendCtx.setStroke(Color.BLACK);
-        legendCtx.moveTo(0,0);
-        legendCtx.lineTo(300, 0);
-        legendCtx.lineTo(300, 500);
-        legendCtx.lineTo(0, 500);
-        legendCtx.closePath();
-        legendCtx.stroke();*/
 
         VBox centralPane = new VBox(10);
         HBox hb = new HBox();
@@ -122,18 +113,6 @@ public class View extends BorderPane {
         slow.setDisable(true);
         bottomPane.getChildren().add(slow);
 
-        configurations = new ComboBox<>();
-        configurations.setOnAction(this::configurationAction);
-        configurations.setVisible(false);
-        bottomPane.getChildren().add(configurations);
-
-        popSize = new TextField("8");
-        popSize.setMaxWidth(40);
-        popSize.setVisible(false);
-        popSize.setOnAction(this::popSizeAction);
-        popSize.addEventFilter(KeyEvent.KEY_TYPED, this::filterText);
-        bottomPane.getChildren().add(popSize);
-
 
         isFinal = new Button("is final ?");
         isFinal.setOnAction(this::isFinalAction);
@@ -154,12 +133,12 @@ public class View extends BorderPane {
 
         menuBar = new MenuBar();
 
-        javafx.scene.control.Menu fileMenu = new javafx.scene.control.Menu("File");
+        Menu fileMenu = new Menu("File");
         MenuItem importItem = new MenuItem("import");
         fileMenu.getItems().add(importItem);
         importItem.setOnAction(this::selectBrowse);
 
-        javafx.scene.control.Menu viewMenu = new javafx.scene.control.Menu("View");
+        Menu viewMenu = new Menu("View");
 
         MenuItem changeColorsItem = new MenuItem("Change the colors");
         changeColorsItem.setOnAction(this::changeAction);
@@ -173,8 +152,23 @@ public class View extends BorderPane {
 
         viewMenu.getItems().addAll(changeColorsItem, changeLegendItem, namesItem);
 
+        Menu editMenu = new Menu("Edit");
+        chooseConf = new Menu("Choose a configurations");
+        chooseConf.setVisible(false);
 
-        menuBar.getMenus().addAll(fileMenu, viewMenu);
+        random = new MenuItem("Random");
+        random.setVisible(false);
+        random.setOnAction((e) -> {
+            ChooseRandom s = new ChooseRandom(this);
+            s.show();
+        });
+
+        createConf = new MenuItem("New Configuration");
+        createConf.setVisible(false);
+        createConf.setOnAction(this::configurationAction);
+
+        editMenu.getItems().addAll(chooseConf, random, createConf);
+        menuBar.getMenus().addAll(fileMenu, editMenu,viewMenu);
 
 
         this.setTop(menuBar);
@@ -195,19 +189,16 @@ public class View extends BorderPane {
                 this.pop = new Population(p);
                 graph = new Graph(pop.getProtocol());
 
-                LinkedList<String> options = new LinkedList<>();
-                options.add("Random");
+                chooseConf.getItems().removeAll();
                 for(HashMap<State, Integer> c : p.getConfigurations()){
-                    options.add(c.toString());
+                    MenuItem opt = new MenuItem(c.toString());
+                    opt.setOnAction(this::resetAction);
+                    chooseConf.getItems().add(opt);
                 }
-                options.add("Create new one");
 
-                configurations.setOnAction(this::nothing);
-                configurations.setItems(FXCollections.observableArrayList(options));
-                configurations.setValue("Random");
-                configurations.setVisible(true);
-                configurations.setOnAction(this::configurationAction);
-                popSize.setVisible(true);
+                chooseConf.setVisible(true);
+                random.setVisible(true);
+                createConf.setVisible(true);
 
                 if(this.anim != null) {
                     this.anim.stop();
@@ -247,11 +238,14 @@ public class View extends BorderPane {
     }
 
     private void resetAction(ActionEvent e) {
-        int ind = configurations.getSelectionModel().getSelectedIndex();
-        if(ind <= 0){
+        //int ind = configurations.getSelectionModel().getSelectedIndex();
+        int ind = chooseConf.getItems().indexOf(e.getSource());
+        System.out.println(ind);
+        System.out.println(e.getSource());
+        if(ind < 0){
             this.pop.randomPop(Population.defaultSize);
         } else {
-            this.pop.popFromMap(this.pop.getProtocol().getConfigurations().get(ind-1));
+            this.pop.popFromMap(this.pop.getProtocol().getConfigurations().get(ind));
         }
 
         this.slow.setDisable(true);
@@ -300,20 +294,10 @@ public class View extends BorderPane {
         }
     }
 
-    private void configurationAction(ActionEvent e){
-        popSize.setVisible(configurations.getValue().equals("Random"));
-        if(configurations.getValue().equals("Create new one")){
-            State[] states = new State[this.pop.getProtocol().getInit().size()];
-            this.pop.getProtocol().getInit().toArray(states);
-            new CreateConf(this,states);
-            return;
-        }
-        resetAction(e);
-    }
-
-    private void popSizeAction(ActionEvent e){
-        Population.setDefaultSize(Integer.parseInt(popSize.getCharacters().toString()));
-        resetAction(e);
+    public void configurationAction(ActionEvent e) {
+        State[] states = new State[this.pop.getProtocol().getInit().size()];
+        this.pop.getProtocol().getInit().toArray(states);
+        new CreateConf(this,states);
     }
 
     private void namesAction(ActionEvent e){
@@ -373,21 +357,10 @@ public class View extends BorderPane {
     public void updateCustomConf(HashMap<State, Integer> map) {
         this.pop.getProtocol().addConf(map);
 
-        LinkedList<String> options = new LinkedList<>();
-        options.add("Random");
-        int index = 1;
-        for(HashMap<State, Integer> c : this.pop.getProtocol().getConfigurations()){
-            options.add(c.toString());
-            index++;
-        }
-        options.add("Create new one");
-
-        //J'ai du désactiver les events sur configurations sinon ça fait des choses étranges
-        //En fait ça active le le listener alors que rien ne l'actionne, bref je comprends pas trop
-        configurations.setOnAction(this::nothing);
-        configurations.setItems(FXCollections.observableArrayList(options));
-        configurations.setOnAction(this::configurationAction);
-        configurations.getSelectionModel().select(index - 1);
+        MenuItem opt = new MenuItem(map.toString());
+        opt.setOnAction(this::resetAction);
+        chooseConf.getItems().add(opt);
+        opt.fire();
     }
 
     public String getProtocolPath() {
@@ -411,14 +384,14 @@ public class View extends BorderPane {
 
     public void backAction(ActionEvent e){
         if(anim != null) this.anim.stop();
-        this.menu.changeScene("menu");
+        this.menuStart.changeScene("menu");
     }
 
-    private void filterText(KeyEvent e) {
-        if(!isDigit(e.getCharacter().charAt(0))) {
-            e.consume();
-        }
+    public void changeRandomAction(int size) {
+        Population.setDefaultSize(size);
+        reset.fire();
     }
+
 
     private boolean isDigit(char c) {
         String digits = "0123456789";

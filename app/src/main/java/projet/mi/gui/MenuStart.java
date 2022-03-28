@@ -4,7 +4,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class Menu extends Application {
+public class MenuStart extends Application {
     private Scene menuScene;
     private Scene simulateScene;
     private Scene statScene;

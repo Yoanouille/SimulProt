@@ -1,8 +1,6 @@
 package projet.mi.gui;
 
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
@@ -31,7 +29,7 @@ import java.io.File;
 
 
 public class MenuStat extends BorderPane {
-    private Menu menu;
+    private MenuStart menuStart;
 
     private Canvas canvas;
 
@@ -57,10 +55,10 @@ public class MenuStat extends BorderPane {
 
     private Label title = new Label("You have to import a protocol !");
 
-    public MenuStat(Menu menu) {
+    public MenuStat(MenuStart menuStart) {
         this.setPadding(new Insets(10,10,10,20));
 
-        this.menu = menu;
+        this.menuStart = menuStart;
 
         canvas = new Canvas(this.width, this.height);
 
@@ -220,7 +218,7 @@ public class MenuStat extends BorderPane {
 
     public void backAction(ActionEvent e) {
         if(chart != null) chart.stop();
-        menu.changeScene("menu");
+        menuStart.changeScene("menu");
     }
 
     public void stop() {
