@@ -351,7 +351,7 @@ public class View extends BorderPane {
     }
 
     private void checkIsFinalAction(ActionEvent e) {
-        anim.setCheckIsFinal(checkIsFinal.isSelected());
+        if(anim != null) anim.setCheckIsFinal(checkIsFinal.isSelected());
     }
 
     private void isWellDefinedAction(ActionEvent actionEvent) {
