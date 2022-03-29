@@ -29,6 +29,10 @@ public class Animation {
     private boolean drawNames;
     private Graph graph;
 
+    private String text;
+    private Color color_text;
+    private double opacity = 0;
+
     public Animation(Population pop, double width, double height, GraphicsContext ctx){
         this.pop = pop;
         this.ctx = ctx;
@@ -121,6 +125,12 @@ public class Animation {
 
     public int getSimulationSpeed(){
         return this.simulationSpeed;
+    }
+
+    public void addText(String t, Color c) {
+        text = t;
+        color_text = c;
+        opacity = 1;
     }
 
     public boolean update(double dt){
@@ -252,6 +262,14 @@ public class Animation {
         if(pop.allYes()) drawBorder(ctx, Color.GREEN);
         else if(pop.allNo()) drawBorder(ctx, Color.RED);
         else drawBorder(ctx, Color.BLACK);
+        if(opacity > 0) {
+            ctx.setFont(new Font(50));
+            ctx.setTextAlign(TextAlignment.CENTER);
+            ctx.setTextBaseline(VPos.CENTER);
+            ctx.setFill(new Color(color_text.getRed(), color_text.getGreen(), color_text.getBlue(), opacity));
+            ctx.fillText(text, width / 2, height / 2);
+            opacity -= 0.005;
+        }
     }
 
     public class AnimationTime extends AnimationTimer {

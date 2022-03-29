@@ -37,7 +37,7 @@ public class MenuStart extends Application {
                 break;
             case "simulate":
                 simulateScene = new Scene(new View(this));
-                primaryStage.setWidth(1150);
+                primaryStage.setWidth(1100);
                 primaryStage.setHeight(700);
                 primaryStage.setScene(simulateScene);
                 break;

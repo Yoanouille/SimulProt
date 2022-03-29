@@ -82,7 +82,7 @@ public class View extends BorderPane {
         this.legendCanvas = new Canvas(220, 500);
         this.legendCtx = this.legendCanvas.getGraphicsContext2D();
         scrollPane.setContent(legendCanvas);
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
         VBox centralPane = new VBox(10);
         HBox hb = new HBox();
@@ -100,7 +100,7 @@ public class View extends BorderPane {
         BorderPane bottom = new BorderPane();
 
         HBox bottomPane = new HBox(30);
-        bottomPane.setPadding(new Insets(10,10,10,10));
+        bottomPane.setPadding(new Insets(10,10,0,10));
         bottomPane.setAlignment(Pos.CENTER);
 
         reset = new Button();
@@ -131,8 +131,13 @@ public class View extends BorderPane {
         bottomPane.getChildren().add(isWellDefined);
 
 
+        HBox backPane = new HBox();
+        backPane.setPadding(new Insets(0,10,10,0));
         Button back = new Button("Back");
-        bottomPane.getChildren().add(back);
+        back.setAlignment(Pos.BOTTOM_RIGHT);
+        backPane.getChildren().add(back);
+        backPane.setAlignment(Pos.BOTTOM_RIGHT);
+        bottom.setBottom(backPane);
         back.setOnAction(this::backAction);
         //TODO mettre le bouton back dans un coin
 
@@ -224,7 +229,6 @@ public class View extends BorderPane {
             } catch (IllegalSyntax ex) {
                 this.drawError(ex.getMessage());
             }
-            this.isFinalText.setVisible(false);
             this.isFinal.setText("is final ?");
             this.isFinal.setVisible(true);
             this.isFinal.setManaged(true);
@@ -269,7 +273,7 @@ public class View extends BorderPane {
         this.accelerate.setDisable(false);
         if(this.anim != null) {
             this.anim.stop();
-            togglePlay.setText("Play");
+            changeImage(togglePlay, "images/play.png");
             running = false;
         }
         this.anim = new Animation(this.pop, this.width, this.height, this.ctx);
@@ -277,7 +281,6 @@ public class View extends BorderPane {
         this.anim.draw(this.ctx);
         //legend = true;
         drawInfo();
-        this.isFinalText.setVisible(false);
         this.isFinal.setText("is final ?");
         this.isFinal.setVisible(true);
         this.isFinal.setManaged(true);
@@ -328,22 +331,16 @@ public class View extends BorderPane {
         if(pop != null){
             isFinal.setManaged(false);
             isFinal.setVisible(false);
-            isFinalText.setVisible(true);
-            isFinalText.setText("Calculating...");
             Configuration conf = pop.getConfiguration();
             if(graph.isFinal(conf)){
-                isFinalText.setText("The configuration is final!");
-                if(this.pop.allYes()){
-                    isFinalText.setStyle("-fx-background-color: rgb(100, 255, 100)");
-                } else {
-                    isFinalText.setStyle("-fx-background-color: red");
-                }
+                anim.addText("FINAL !", this.pop.allYes() ? Color.rgb(100, 255, 100) : Color.RED);
+                anim.draw(ctx);
                 //System.out.println("FINAL");
             } else {
-                isFinal.setText("Not final! Click to check again");
                 isFinal.setManaged(true);
                 isFinal.setVisible(true);
-                isFinalText.setVisible(false);
+                anim.addText("NOT FINAL !", Color.BLACK);
+                anim.draw(ctx);
                 //System.out.println("NOT FINAL");
             }
         }
@@ -354,16 +351,17 @@ public class View extends BorderPane {
             Configuration conf = pop.getConfiguration();
             if(graph == null) graph = new Graph(pop.getProtocol());
             if(graph.isWellDefined(conf)){
-                isWellDefined.setText("Well defined! click to check again");
+                anim.addText("Well defined !", Color.BLACK);
+                anim.draw(ctx);
             } else {
-                isWellDefined.setText("Not well defined! click to check again");
+                anim.addText("Not well defined!", Color.RED);
+                anim.draw(ctx);
             }
         }
     }
 
     private void drawError(String error) {
-        ctx.setFill(Color.WHITE);
-        ctx.fillRect(0,0,width, height);
+        ctx.clearRect(0,0,width, height);
         ctx.setFont(new Font(ctx.getFont().getName(), 20));
         ctx.setTextBaseline(VPos.CENTER);
         ctx.setTextAlign(TextAlignment.CENTER);
