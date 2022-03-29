@@ -16,7 +16,7 @@
 \subsection{Population}
 
 Soit $E$ un ensemble fini. Une $population$ sur $E$ est une fonction $P: E \longrightarrow \mathbb{N}$ où il existe $e \in E$ tel que $P(e) > 0$. $P(e)$ représente le nombre d'individu de type $e \in E$ dans la population.\\
-On notera $Pop(E)$ l'ensemble des $population$ sur E et $\boldsymbol{e}$  la $population$ vérifiant $\boldsymbol{e}(e) = 1$ et $\boldsymbol{e}(e')$ $\forall e \in E, e \ne e'$
+On notera $Pop(E)$ l'ensemble des $population$ sur E et $\boldsymbol{e}$  la $population$ vérifiant $\boldsymbol{e}(e) = 1$ et $\boldsymbol{e}(e') = 0$ $\forall e \in E, e \ne e'$
 
 \subsection{Protocole de Population}
 Un protocole de population $(Q, Q_{0}, F_{Y}, F_{N},\Delta)$ où :\\
@@ -31,7 +31,6 @@ Soit $\delta=(q_{1},q_{2},q_{3},q_{4}) \in \Delta$. On pourra noter $\delta = (q
 Soient $C \in Pop(Q)$ et $C' \in Pop(Q)$\\
 On notera $C \xrightarrow{\delta} C'$ ssi\\
 $C \geq \boldsymbol{q_{1}} + \boldsymbol{q_{2}}$ et $C' = C + \boldsymbol{q_{3}} + \boldsymbol{q_{4}} - \boldsymbol{q_{1}} - \boldsymbol{q_{2}}$
-
 
 
 \end{document}

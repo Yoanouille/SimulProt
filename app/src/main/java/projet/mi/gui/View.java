@@ -1,11 +1,14 @@
 package projet.mi.gui;
 
 import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -79,6 +82,7 @@ public class View extends BorderPane {
         this.legendCanvas = new Canvas(220, 500);
         this.legendCtx = this.legendCanvas.getGraphicsContext2D();
         scrollPane.setContent(legendCanvas);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
         VBox centralPane = new VBox(10);
         HBox hb = new HBox();
@@ -93,22 +97,26 @@ public class View extends BorderPane {
 
         centralPane.getChildren().add(hb);
 
+        BorderPane bottom = new BorderPane();
 
-        HBox bottomPane = new HBox();
+        HBox bottomPane = new HBox(30);
+        bottomPane.setPadding(new Insets(10,10,10,10));
+        bottomPane.setAlignment(Pos.CENTER);
 
-        reset = new Button("Reset");
+        reset = new Button();
         reset.setOnAction(this::resetAction);
+        reset.setAlignment(Pos.BOTTOM_RIGHT);
         bottomPane.getChildren().add(reset);
 
-        togglePlay = new Button("Play");
+        togglePlay = new Button();
         togglePlay.setOnAction(this::togglePlayAction);
         bottomPane.getChildren().add(togglePlay);
 
-        accelerate = new Button("Speed");
+        accelerate = new Button();
         accelerate.setOnAction(this::speedUpAction);
         bottomPane.getChildren().add(accelerate);
 
-        slow = new Button("Slow");
+        slow = new Button();
         slow.setOnAction(this::slowAction);
         slow.setDisable(true);
         bottomPane.getChildren().add(slow);
@@ -117,9 +125,6 @@ public class View extends BorderPane {
         isFinal = new Button("is final ?");
         isFinal.setOnAction(this::isFinalAction);
         bottomPane.getChildren().add(isFinal);
-        isFinalText = new Label("");
-        isFinalText.setVisible(false);
-        bottomPane.getChildren().add(isFinalText);
 
         isWellDefined = new Button("is well defined ?");
         isWellDefined.setOnAction(this::isWellDefinedAction);
@@ -170,10 +175,16 @@ public class View extends BorderPane {
         editMenu.getItems().addAll(chooseConf, random, createConf);
         menuBar.getMenus().addAll(fileMenu, editMenu,viewMenu);
 
+        changeImage(togglePlay, "images/play.png");
+        changeImage(accelerate, "images/fast.png");
+        changeImage(slow, "images/slow.png");
+        changeImage(reset, "images/reset.png");
 
         this.setTop(menuBar);
         this.setCenter(centralPane);
-        this.setBottom(bottomPane);
+
+        bottom.setCenter(bottomPane);
+        this.setBottom(bottom);
     }
 
     private void selectBrowse(ActionEvent e) {
@@ -202,7 +213,7 @@ public class View extends BorderPane {
 
                 if(this.anim != null) {
                     this.anim.stop();
-                    togglePlay.setText("Play");
+                    changeImage(togglePlay, "images/play.png");
                     running = false;
                 }
                 this.anim = new Animation(this.pop, this.width, this.height, this.ctx);
@@ -220,6 +231,15 @@ public class View extends BorderPane {
         }
     }
 
+    private void changeImage(Button b, String url) {
+        File file = new File(url);
+        Image img = new Image(file.toURI().toString());
+        ImageView view = new ImageView(img);
+        view.setFitHeight(30);
+        view.setPreserveRatio(true);
+        b.setGraphic(view);
+    }
+
 
     private void togglePlayAction(ActionEvent e) {
         if(this.anim == null) {
@@ -228,20 +248,17 @@ public class View extends BorderPane {
         if(!running) {
             running = true;
             this.anim.start();
-            togglePlay.setText("Pause");
+            changeImage(togglePlay, "images/pause.png");
         }
         else {
             running = false;
             this.anim.stop();
-            togglePlay.setText("Play");
+            changeImage(togglePlay, "images/play.png");
         }
     }
 
     private void resetAction(ActionEvent e) {
-        //int ind = configurations.getSelectionModel().getSelectedIndex();
         int ind = chooseConf.getItems().indexOf(e.getSource());
-        System.out.println(ind);
-        System.out.println(e.getSource());
         if(ind < 0){
             this.pop.randomPop(Population.defaultSize);
         } else {
