@@ -41,13 +41,13 @@ public class View extends BorderPane {
     private Label title;
     private CheckMenuItem namesItem;
     private Button isFinal;
-    private Label isFinalText;
     private Button isWellDefined;
     private MenuBar menuBar;
 
     private Menu chooseConf;
     private MenuItem random;
     private MenuItem createConf;
+    private CheckMenuItem checkIsFinal;
 
 
     private Canvas canvas;
@@ -177,7 +177,11 @@ public class View extends BorderPane {
         createConf.setVisible(false);
         createConf.setOnAction(this::configurationAction);
 
-        editMenu.getItems().addAll(chooseConf, random, createConf);
+        checkIsFinal = new CheckMenuItem("Check is Final");
+        checkIsFinal.setSelected(true);
+        checkIsFinal.setOnAction(this::checkIsFinalAction);
+
+        editMenu.getItems().addAll(chooseConf, random, createConf, checkIsFinal);
         menuBar.getMenus().addAll(fileMenu, editMenu,viewMenu);
 
         changeImage(togglePlay, "images/play.png");
@@ -221,7 +225,7 @@ public class View extends BorderPane {
                     changeImage(togglePlay, "images/play.png");
                     running = false;
                 }
-                this.anim = new Animation(this.pop, this.width, this.height, this.ctx);
+                this.anim = new Animation(this.pop, this.width, this.height, this.ctx, checkIsFinal.isSelected());
                 this.anim.setDrawNames(namesItem.isSelected());
                 this.anim.draw(this.ctx);
                 //legend = true;
@@ -276,7 +280,7 @@ public class View extends BorderPane {
             changeImage(togglePlay, "images/play.png");
             running = false;
         }
-        this.anim = new Animation(this.pop, this.width, this.height, this.ctx);
+        this.anim = new Animation(this.pop, this.width, this.height, this.ctx, checkIsFinal.isSelected());
         this.anim.setDrawNames(namesItem.isSelected());
         this.anim.draw(this.ctx);
         //legend = true;
@@ -344,6 +348,10 @@ public class View extends BorderPane {
                 //System.out.println("NOT FINAL");
             }
         }
+    }
+
+    private void checkIsFinalAction(ActionEvent e) {
+        anim.setCheckIsFinal(checkIsFinal.isSelected());
     }
 
     private void isWellDefinedAction(ActionEvent actionEvent) {

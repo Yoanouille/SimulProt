@@ -33,12 +33,16 @@ public class Animation {
     private Color color_text;
     private double opacity = 0;
 
-    public Animation(Population pop, double width, double height, GraphicsContext ctx){
+    private boolean checkIsFinal;
+
+
+    public Animation(Population pop, double width, double height, GraphicsContext ctx, boolean checkIsFinal){
         this.pop = pop;
         this.ctx = ctx;
         this.width = width;
         this.height = height;
         this.initCircle();
+        this.checkIsFinal = checkIsFinal;
         anim = new AnimationTime();
 
         colorMode = false;
@@ -96,6 +100,10 @@ public class Animation {
                 }
             }while(collision);
         }
+    }
+
+    public void setCheckIsFinal(boolean b) {
+        checkIsFinal = b;
     }
 
     public void change() {
@@ -285,7 +293,7 @@ public class Animation {
          */
         public void handle(long now){
             double dt = ((double)(now-lastUpdateTime))/1000000000.; //delta time in seconds (now is in nanoseconds)
-            //boolean collisionOccurred = false;
+            boolean collisionOccurred = false;
 
             if(maxSimulationSpeed == simulationSpeed) {
                 double r = Math.random();
@@ -297,22 +305,25 @@ public class Animation {
                     pop.specialInteractions();
                 }
                 initCircle();
+                collisionOccurred = true;
             } else {
                 for(int i = 0; i < simulationSpeed; i++){
-                    update(dt);
+                    if(update(dt)) {
+                        collisionOccurred = true;
+                    }
                 }
             }
-            /*if(collisionOccurred && (pop.allNo() || pop.allYes())){
+            if(checkIsFinal && collisionOccurred && (pop.allNo() || pop.allYes())){
                 Configuration conf = pop.getConfiguration();
-                //if(graph == null){
-                    graph = new Graph(pop.getProtocol(), conf);
-                //}
+                if(graph == null){
+                    graph = new Graph(pop.getProtocol());
+                }
                 if(graph.isFinal(conf)){
                     this.stop();
                     System.out.println("STOP!");
                 }
-                System.out.println(graph);
-            }*/
+                //System.out.println(graph);
+            }
             draw(ctx);
             lastUpdateTime = now;
         }
