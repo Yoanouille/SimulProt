@@ -17,6 +17,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import projet.mi.exception.IllegalSyntax;
 import projet.mi.model.Protocol;
+import projet.mi.model.State;
 import projet.mi.statistics.Chart;
 
 import java.io.File;
@@ -38,11 +39,11 @@ public class MenuStat extends BorderPane {
     private CheckBox max;
     private CheckBox median;
 
-    private TextField maxIte;
-    private TextField maxPop;
-    private TextField minPop;
-    private TextField nbSimu;
-    private TextField step;
+    private int maxIte = 10000;
+    private int maxPop = 100;
+    private int minPop = 2;
+    private int nbSimu = 100;
+    private int step = 1;
 
     private MenuBar menuBar;
 
@@ -114,12 +115,11 @@ public class MenuStat extends BorderPane {
         leftPane.getChildren().add(leftTopPane);
         leftPane.setAlignment(Pos.CENTER_LEFT);
 
-        GridPane leftBottomPane = new GridPane();
+        /*GridPane leftBottomPane = new GridPane();
         leftBottomPane.setHgap(10);
         leftBottomPane.setVgap(20);
-        createMenuField(leftBottomPane);
         leftBottomPane.setAlignment(Pos.BOTTOM_LEFT);
-        leftPane.getChildren().add(leftBottomPane);
+        leftPane.getChildren().add(leftBottomPane);*/
 
 
         //this.setTop(topPane);
@@ -140,7 +140,12 @@ public class MenuStat extends BorderPane {
         fileMenu.getItems().add(importItem);
         importItem.setOnAction(this::importAction);
 
-        menuBar.getMenus().add(fileMenu);
+        Menu settingsMenu = new Menu("Settings");
+        MenuItem settingsItem = new MenuItem("chart settings");
+        settingsMenu.getItems().add(settingsItem);
+        settingsItem.setOnAction(this::settingsAction);
+
+        menuBar.getMenus().addAll(fileMenu, settingsMenu);
 
         this.setTop(menuBar);
         this.setCenter(centralPane);
@@ -170,43 +175,12 @@ public class MenuStat extends BorderPane {
         grid.addRow(3, rect4, label4, median);
     }
 
-    public void createMenuField(GridPane grid) {
-        Label label1 = new Label("Max Iteration");
-        Label label2 = new Label("Min Pop Size");
-        Label label3 = new Label("Max Pop Size");
-        Label label4 = new Label("Nb Simulation");
-        Label label5 = new Label("Step");
-
-        maxIte = new TextField("10000");
-        maxIte.addEventFilter(KeyEvent.KEY_TYPED,this::filterText);
-        maxIte.setMaxWidth(75);
-        maxIte.setOnAction(this::textFieldAction);
-
-        minPop = new TextField("2");
-        minPop.addEventFilter(KeyEvent.KEY_TYPED, this::filterText);
-        minPop.setMaxWidth(75);
-        minPop.setOnAction(this::textFieldAction);
-
-        maxPop = new TextField("100");
-        maxPop.addEventFilter(KeyEvent.KEY_TYPED, this::filterText);
-        maxPop.setMaxWidth(75);
-        maxPop.setOnAction(this::textFieldAction);
-
-        nbSimu = new TextField("100");
-        nbSimu.addEventFilter(KeyEvent.KEY_TYPED, this::filterText);
-        nbSimu.setMaxWidth(75);
-        nbSimu.setOnAction(this::textFieldAction);
-
-        step = new TextField("1");
-        step.addEventFilter(KeyEvent.KEY_TYPED, this::filterText);
-        step.setMaxWidth(75);
-        step.setOnAction(this::textFieldAction);
-
-        grid.addRow(0, label1, maxIte);
-        grid.addRow(1, label2, minPop);
-        grid.addRow(2, label3, maxPop);
-        grid.addRow(3, label4, nbSimu);
-        grid.addRow(4, label5, step);
+    public void setStats(int maxIteration, int maxPopSize, int minPopSize, int nbSimu, int step){
+        this.maxIte = maxIteration;
+        this.maxPop = maxPopSize;
+        this.minPop = minPopSize;
+        this.nbSimu = nbSimu;
+        this.step = step;
     }
 
     public void importAction(ActionEvent e) {
@@ -218,12 +192,16 @@ public class MenuStat extends BorderPane {
                 protocol = new Protocol(file.getPath());
                 title.setText(protocol.getTitle());
                 if(chart != null) chart.stop();
-                chart = new Chart(canvas, protocol, avg.isSelected(), min.isSelected(), max.isSelected(), median.isSelected(), Integer.parseInt(maxIte.getText()), Integer.parseInt(maxPop.getText()), Integer.parseInt(minPop.getText()), Integer.parseInt(nbSimu.getText()), Integer.parseInt(step.getText()));
+                chart = new Chart(canvas, protocol, avg.isSelected(), min.isSelected(), max.isSelected(), median.isSelected(), maxIte, maxPop, minPop, nbSimu, step);
                 chart.draw(canvas.getGraphicsContext2D(), null);
             } catch (IllegalSyntax ex) {
                 drawError(ex.getMessage());
             }
         }
+    }
+
+    public void settingsAction(ActionEvent e) {
+        new StatSettings(this, maxIte, maxPop, minPop, nbSimu, step);
     }
 
     public void backAction(ActionEvent e) {
@@ -235,10 +213,12 @@ public class MenuStat extends BorderPane {
         if(chart != null) chart.stop();
     }
 
-    private void textFieldAction(ActionEvent e) {
-        if(chart != null) chart.stop();
-        chart = new Chart(canvas, protocol, avg.isSelected(), min.isSelected(), max.isSelected(), median.isSelected(), Integer.parseInt(maxIte.getText()), Integer.parseInt(maxPop.getText()), Integer.parseInt(minPop.getText()), Integer.parseInt(nbSimu.getText()), Integer.parseInt(step.getText()));
-        chart.draw(canvas.getGraphicsContext2D(), null);
+    public void restartChart(){
+        if(protocol != null){
+            if(chart != null) chart.stop();
+            chart = new Chart(canvas, protocol, avg.isSelected(), min.isSelected(), max.isSelected(), median.isSelected(), maxIte, maxPop, minPop, nbSimu, step);
+            chart.draw(canvas.getGraphicsContext2D(), null);
+        }
     }
 
     private void drawError(String error) {
