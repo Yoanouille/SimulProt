@@ -6,15 +6,9 @@ import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -34,10 +28,7 @@ public class MenuStat extends BorderPane {
     private Canvas canvas;
 
     private double width = 900;
-    private double height = 600;
-
-    private Button importButton;
-    private Button back;
+    private double height = 550;
 
     private Protocol protocol;
     private Chart chart;
@@ -53,57 +44,66 @@ public class MenuStat extends BorderPane {
     private TextField nbSimu;
     private TextField step;
 
+    private MenuBar menuBar;
+
     private Label title = new Label("You have to import a protocol !");
 
     public MenuStat(MenuStart menuStart) {
-        this.setPadding(new Insets(10,10,10,20));
+
 
         this.menuStart = menuStart;
 
         canvas = new Canvas(this.width, this.height);
 
-        HBox centralPane = new HBox();
+        VBox centralPane = new VBox();
         centralPane.setAlignment(Pos.CENTER);
 
-        HBox bottomPane = new HBox();
+        //HBox bottomPane = new HBox();
 
-        importButton = new Button("import");
-        importButton.setOnAction(this::importAction);
-        bottomPane.getChildren().add(importButton);
-
-        back = new Button("back");
+        HBox backPane = new HBox();
+        backPane.setPadding(new Insets(0,10,10,0));
+        Button back = new Button("Back");
+        back.setAlignment(Pos.BOTTOM_RIGHT);
+        backPane.getChildren().add(back);
+        backPane.setAlignment(Pos.BOTTOM_RIGHT);
+        //BorderPane bottom = new BorderPane();
+        //bottom.getChildren().add(bottomPane);
+        //bottom.setBottom(bottomPane);
         back.setOnAction(this::backAction);
-        bottomPane.getChildren().add(back);
+
+        //bottom.setCenter(bottomPane);
+        this.setBottom(backPane);
 
         avg = new CheckBox();
         avg.setSelected(true);
         avg.setOnAction((e) -> {
             if(chart != null) chart.setAvg(avg.isSelected());
         });
-        bottomPane.getChildren().add(avg);
+        //bottomPane.getChildren().add(avg);
 
         min = new CheckBox();
         min.setSelected(true);
         min.setOnAction((e) -> {
             if(chart != null) chart.setMin(min.isSelected());
         });
-        bottomPane.getChildren().add(min);
+        //bottomPane.getChildren().add(min);
 
         max = new CheckBox("");
         max.setSelected(true);
         max.setOnAction((e) -> {
             if(chart != null) chart.setMax(max.isSelected());
         });
-        bottomPane.getChildren().add(max);
+        //bottomPane.getChildren().add(max);
 
         median = new CheckBox("");
         median.setSelected(true);
         median.setOnAction((e) -> {
             if(chart != null) chart.setMedian(median.isSelected());
         });
-        bottomPane.getChildren().add(median);
+        //bottomPane.getChildren().add(median);
 
         VBox leftPane = new VBox(100);
+        leftPane.setPadding(new Insets(10,10,10,20));
 
         GridPane leftTopPane = new GridPane();
         leftTopPane.setHgap(10);
@@ -122,19 +122,29 @@ public class MenuStat extends BorderPane {
         leftPane.getChildren().add(leftBottomPane);
 
 
-        HBox topPane = new HBox();
-        topPane.setPadding(new Insets(10, 10, 10, 0));
-        title = new Label("You have to import your protocol !");
-        title.setFont(new Font(30));
-        topPane.getChildren().add(title);
-        topPane.setAlignment(Pos.CENTER);
-        this.setTop(topPane);
+        //this.setTop(topPane);
         this.setLeft(leftPane);
 
+        //HBox topPane = new HBox();
+        //topPane.setPadding(new Insets(10, 10, 10, 0));
+        title = new Label("You have to import your protocol !");
+        title.setPadding(new Insets(20, 0, 10, 0));
+        title.setFont(new Font(30));
+        centralPane.getChildren().add(title);
         centralPane.getChildren().add(canvas);
 
+        menuBar = new MenuBar();
+
+        Menu fileMenu = new Menu("File");
+        MenuItem importItem = new MenuItem("import");
+        fileMenu.getItems().add(importItem);
+        importItem.setOnAction(this::importAction);
+
+        menuBar.getMenus().add(fileMenu);
+
+        this.setTop(menuBar);
         this.setCenter(centralPane);
-        this.setBottom(bottomPane);
+        //this.setBottom(bottomPane);
 
     }
 

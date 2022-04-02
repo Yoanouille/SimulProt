@@ -276,7 +276,7 @@ public class Animation {
             ctx.setTextBaseline(VPos.CENTER);
             ctx.setFill(new Color(color_text.getRed(), color_text.getGreen(), color_text.getBlue(), opacity));
             ctx.fillText(text, width / 2, height / 2);
-            opacity -= 0.005;
+            opacity -= 0.01;
         }
     }
 
@@ -320,6 +320,7 @@ public class Animation {
                 }
                 if(graph.isFinal(conf)){
                     this.stop();
+                    addText("FINAL !", pop.allYes() ? Color.rgb(100, 255, 100) : Color.RED);
                     System.out.println("STOP!");
                 }
                 //System.out.println(graph);
