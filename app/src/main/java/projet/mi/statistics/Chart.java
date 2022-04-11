@@ -181,6 +181,19 @@ public class Chart {
                 ctx.setStroke(Color.PURPLE);
                 drawOneGraph(ctx, x, y, width, height, st, maxX, maxY, "median");
             }
+
+
+            ctx.setFont(new Font(ctx.getFont().getName(), 20));
+            ctx.setFill(Color.BLACK);
+            ctx.setTextBaseline(VPos.CENTER);
+            ctx.setTextAlign(TextAlignment.CENTER);
+            ctx.fillText("Population size", x+width/2, y+height+45);
+
+            ctx.save();
+            ctx.translate(x-80, y+height/2);
+            ctx.rotate(-90);
+            ctx.fillText("Iterations", 0, 0);
+            ctx.restore();
         }
     }
 
@@ -190,9 +203,8 @@ public class Chart {
         ctx.setFont(new Font(ctx.getFont().getName(), 15));
         ctx.setTextBaseline(VPos.CENTER);
 
-        ctx.setFill(Color.WHITE);
         ctx.clearRect(0,0,canvas.getWidth(),canvas.getHeight());
 
-        drawGraph(ctx, 75, 75, canvas.getWidth() - 150, canvas.getHeight() - 150, st);
+        drawGraph(ctx, 100, 15, canvas.getWidth() - 150, canvas.getHeight() - 80, st);
     }
 }

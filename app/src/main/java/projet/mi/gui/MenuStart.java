@@ -25,7 +25,7 @@ public class MenuStart extends Application {
         primaryStage.setScene(menuScene);
         primaryStage.setMinWidth(1050);
         primaryStage.setMinHeight(600);
-        primaryStage.setWidth(1150);
+        primaryStage.setWidth(1100);
         primaryStage.setHeight(700);
         primaryStage.show();
     }
@@ -45,7 +45,8 @@ public class MenuStart extends Application {
                 primaryStage.setScene(simulateScene);
                 break;
             case "stat":
-                primaryStage.setWidth(1200);
+                primaryStage.setWidth(1100);
+                primaryStage.setHeight(720);
                 menuStat = new MenuStat(this);
                 statScene = new Scene(menuStat);
                 primaryStage.setScene(statScene);

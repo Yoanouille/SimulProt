@@ -140,7 +140,6 @@ public class View extends BorderPane {
         backPane.setAlignment(Pos.BOTTOM_RIGHT);
         bottom.setBottom(backPane);
         back.setOnAction(this::backAction);
-        //TODO mettre le bouton back dans un coin
 
         menuBar = new MenuBar();
 
