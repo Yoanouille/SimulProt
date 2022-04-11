@@ -68,6 +68,7 @@ public class View extends BorderPane {
     private MenuStart menuStart;
     private Graph graph;
 
+    private int ind = -1;
 
 
     public View(MenuStart menuStart) {
@@ -209,10 +210,10 @@ public class View extends BorderPane {
                 this.pop = new Population(p);
                 graph = new Graph(pop.getProtocol());
 
-                chooseConf.getItems().removeAll();
+                chooseConf.getItems().clear();
                 for(HashMap<State, Integer> c : p.getConfigurations()){
                     MenuItem opt = new MenuItem(c.toString());
-                    opt.setOnAction(this::resetAction);
+                    opt.setOnAction(this::selectConf);
                     chooseConf.getItems().add(opt);
                 }
 
@@ -266,7 +267,8 @@ public class View extends BorderPane {
     }
 
     private void resetAction(ActionEvent e) {
-        int ind = chooseConf.getItems().indexOf(e.getSource());
+        //int ind = chooseConf.getItems().indexOf(e.getSource());
+
         if(ind < 0){
             this.pop.randomPop(Population.defaultSize);
         } else {
@@ -381,9 +383,14 @@ public class View extends BorderPane {
         this.pop.getProtocol().addConf(map);
 
         MenuItem opt = new MenuItem(map.toString());
-        opt.setOnAction(this::resetAction);
+        opt.setOnAction(this::selectConf);
         chooseConf.getItems().add(opt);
         opt.fire();
+    }
+
+    public void selectConf(ActionEvent e) {
+        ind = chooseConf.getItems().indexOf(e.getSource());
+        resetAction(e);
     }
 
     public String getProtocolPath() {
@@ -412,6 +419,7 @@ public class View extends BorderPane {
 
     public void changeRandomAction(int size) {
         Population.setDefaultSize(size);
+        ind = -1;
         reset.fire();
     }
 
