@@ -61,12 +61,29 @@ public class Graph {
         queue.addAll(nexts);
     }
 
+    public void setAll(HashSet<Configuration> visited, String finalSon, int isfinal) {
+        for(Configuration conf : visited) {
+            conf.setIsFinal(isfinal);
+            conf.setFinalSon(finalSon);
+        }
+    }
+    public void setAll2(HashSet<Configuration> visited, String finalSon) {
+        for(Configuration conf : visited) {
+            conf.setFinalSon(finalSon);
+        }
+    }
+
     public boolean isFinal(Configuration conf){
+        if(conf.getIsFinal() == 1) return true;
+        if(conf.getIsFinal() == 0) return false;
         StateSet set;
+        String finalSon = "";
         if(conf.allInSet(protocol.getYes())){
             set = protocol.getYes();
+            finalSon = "yes";
         } else if(conf.allInSet(protocol.getNo())){
             set = protocol.getNo();
+            finalSon = "no";
         } else {
             return false;
         }
@@ -78,28 +95,38 @@ public class Graph {
         queue.add(conf);
         while(!queue.isEmpty()){
             if(!queue.getFirst().allInSet(set)){
+                conf.setIsFinal(0);
                 return false;
             }
             step2(visited, queue);
         }
+        setAll(visited, finalSon, 1);
+        conf.setIsFinal(1);
+        conf.setFinalSon(finalSon);
         return true;
     }
 
     public String hasFinalSon(Configuration conf){
+        if(conf.getFinalSon().equals("yes")) return "yes";
+        if(conf.getFinalSon().equals("no")) return "no";
+        if(conf.getFinalSon().equals("noFinalSon")) return "noFinalSon";
         HashSet<Configuration> visited = new HashSet<>();
         LinkedList<Configuration> queue = new LinkedList<>();
         queue.add(conf);
         while(!queue.isEmpty()){
             Configuration c = queue.getFirst();
             if(isFinal(c)){
-                if(c.allInSet(protocol.getYes())){
-                    return "yes";
-                } else {
-                    return "no";
-                }
+//                if(c.allInSet(protocol.getYes())){
+//                    return "yes";
+//                } else {
+//                    return "no";
+//                }
+                setAll2(visited, c.getFinalSon());
+                return c.getFinalSon();
             }
             step2(visited, queue);
         }
+        conf.setFinalSon("noFinalSon");
         return "noFinalSon";
     }
 
@@ -126,7 +153,7 @@ public class Graph {
     public String toString() {
         String s = "";
         for(Map.Entry<Configuration, ArrayList<Configuration>> e : graph.entrySet()){
-            s += e.getKey()+" -> "+e.getValue()+"\n";
+            s += e.getKey()+" -> "+e.getValue()+" | finalSon = " + e.getKey().getFinalSon() + " | isFinal = " + e.getKey().getIsFinal() + "\n";
         }
         return s;
     }

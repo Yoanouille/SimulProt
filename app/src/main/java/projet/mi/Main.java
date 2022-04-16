@@ -9,15 +9,21 @@ import projet.mi.model.Protocol;
 
 public class Main {
     public static void main(String[] args) throws IllegalSyntax {
-        Protocol p = new Protocol("../examples/notWellDefined.pp");
+       // Protocol p = new Protocol("../examples/notWellDefined.pp");
+        Protocol p = new Protocol("../examples/example.pp");
         System.out.print(p);
-        //String[] startingStates = {"Y", "Y", "Y", "N", "N"};
-        String[] startingStates = {"0", "0", "1", "1"};
-        Population pop = new Population(p, startingStates);
+        String[] startingStates = {"Y", "Y", "Y", "N", "N"};
+       // String[] startingStates = {"0", "0", "1", "1"};
+       // Population pop = new Population(p, startingStates);
+       Population.setDefaultSize(8);
+       Population pop = new Population(p);
+       // Population pop = new Population(p, startingStates);
         Configuration conf = pop.getConfiguration();
         Graph g = new Graph(p);
         System.out.println(g.isWellDefined(conf));
         System.out.println(g);
+
+
         /*String[] startingStates = {"Y", "Y", "Y", "N", "N"};
         Population pop = new Population(p, startingStates);
         Configuration conf = pop.getConfiguration();

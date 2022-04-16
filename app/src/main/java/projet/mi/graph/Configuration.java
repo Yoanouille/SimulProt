@@ -11,6 +11,8 @@ import java.util.Objects;
 
 public class Configuration {
     private HashMap<State, Integer> conf;
+    private String finalSon = "";
+    private int isFinal = -1;
 
     public Configuration(HashMap<State, Integer> conf){
         this.conf = conf;
@@ -62,5 +64,21 @@ public class Configuration {
     @Override
     public String toString() {
         return conf.toString();
+    }
+
+    public int getIsFinal() {
+        return isFinal;
+    }
+
+    public void setIsFinal(int isFinal) {
+        this.isFinal = isFinal;
+    }
+
+    public void setFinalSon(String finalSon) {
+        this.finalSon = finalSon;
+    }
+
+    public String getFinalSon() {
+        return finalSon;
     }
 }
