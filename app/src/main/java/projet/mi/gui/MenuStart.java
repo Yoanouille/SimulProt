@@ -10,6 +10,7 @@ public class MenuStart extends Application {
     private Scene statScene;
 
     private MenuStat menuStat;
+    private View view;
 
     private Stage primaryStage;
 
@@ -18,6 +19,7 @@ public class MenuStart extends Application {
         this.primaryStage = primaryStage;
         primaryStage.setOnCloseRequest((e) -> {
             if(menuStat != null) menuStat.stop();
+            if(view != null) view.stopThread();
         });
 
         menuScene = new Scene(new FirstMenu(this));
@@ -39,7 +41,8 @@ public class MenuStart extends Application {
                 primaryStage.setScene(menuScene);
                 break;
             case "simulate":
-                simulateScene = new Scene(new View(this));
+                view = new View(this);
+                simulateScene = new Scene(view);
                 primaryStage.setWidth(1100);
                 primaryStage.setHeight(700);
                 primaryStage.setScene(simulateScene);

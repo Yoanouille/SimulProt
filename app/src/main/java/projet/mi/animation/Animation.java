@@ -35,6 +35,8 @@ public class Animation {
 
     private boolean checkIsFinal;
 
+    private boolean isCalculating = false;
+
 
     public Animation(Population pop, double width, double height, GraphicsContext ctx, boolean checkIsFinal){
         this.pop = pop;
@@ -158,6 +160,10 @@ public class Animation {
         return collisionOccurred;
     }
 
+    public void doCalcul(boolean isCalculating) {
+        this.isCalculating = isCalculating;
+    }
+
     public void drawBorder(GraphicsContext ctx, Color c) {
         ctx.setLineWidth(5);
         ctx.beginPath();
@@ -278,6 +284,15 @@ public class Animation {
             ctx.fillText(text, width / 2, height / 2);
             opacity -= 0.01;
         }
+        if(isCalculating) {
+            ctx.setFill(Color.rgb(255,255,255,0.5));
+            ctx.fillRect(0,0,width, height);
+            ctx.setFont(new Font(50));
+            ctx.setTextAlign(TextAlignment.CENTER);
+            ctx.setTextBaseline(VPos.CENTER);
+            ctx.setFill(Color.BLACK);
+            ctx.fillText("Calculating ...", width / 2, height / 2);
+        }
     }
 
     public class AnimationTime extends AnimationTimer {
@@ -294,36 +309,37 @@ public class Animation {
         public void handle(long now){
             double dt = ((double)(now-lastUpdateTime))/1000000000.; //delta time in seconds (now is in nanoseconds)
             boolean collisionOccurred = false;
-
-            if(maxSimulationSpeed == simulationSpeed) {
-                double r = Math.random();
-                if(r > 0.1) {
-                    for (int i = 0; i < maxSimulationSpeed; i++) {
-                        pop.randomInteraction();
+            if(!isCalculating) {
+                if (maxSimulationSpeed == simulationSpeed) {
+                    double r = Math.random();
+                    if (r > 0.1) {
+                        for (int i = 0; i < maxSimulationSpeed; i++) {
+                            pop.randomInteraction();
+                        }
+                    } else {
+                        pop.specialInteractions();
                     }
+                    initCircle();
+                    collisionOccurred = true;
                 } else {
-                    pop.specialInteractions();
-                }
-                initCircle();
-                collisionOccurred = true;
-            } else {
-                for(int i = 0; i < simulationSpeed; i++){
-                    if(update(dt)) {
-                        collisionOccurred = true;
+                    for (int i = 0; i < simulationSpeed; i++) {
+                        if (update(dt)) {
+                            collisionOccurred = true;
+                        }
                     }
                 }
-            }
-            if(checkIsFinal && collisionOccurred && (pop.allNo() || pop.allYes())){
-                Configuration conf = pop.getConfiguration();
-                if(graph == null){
-                    graph = new Graph(pop.getProtocol());
+                if (checkIsFinal && collisionOccurred && (pop.allNo() || pop.allYes())) {
+                    Configuration conf = pop.getConfiguration();
+                    if (graph == null) {
+                        graph = new Graph(pop.getProtocol());
+                    }
+                    if (graph.isFinal(conf)) {
+                        this.stop();
+                        addText("FINAL !", pop.allYes() ? Color.rgb(100, 255, 100) : Color.RED);
+                        System.out.println("STOP!");
+                    }
+                    //System.out.println(graph);
                 }
-                if(graph.isFinal(conf)){
-                    this.stop();
-                    addText("FINAL !", pop.allYes() ? Color.rgb(100, 255, 100) : Color.RED);
-                    System.out.println("STOP!");
-                }
-                //System.out.println(graph);
             }
             draw(ctx);
             lastUpdateTime = now;

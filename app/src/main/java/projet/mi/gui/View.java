@@ -70,6 +70,7 @@ public class View extends BorderPane {
 
     private int ind = -1;
 
+    private Thread isWellDefinedThread;
 
     public View(MenuStart menuStart) {
         this.menuStart = menuStart;
@@ -270,6 +271,7 @@ public class View extends BorderPane {
 
         if(ind < 0){
             this.pop.randomPop(Population.defaultSize);
+            graph = new Graph(pop.getProtocol());
         } else {
             this.pop.popFromMap(this.pop.getProtocol().getConfigurations().get(ind));
         }
@@ -359,13 +361,21 @@ public class View extends BorderPane {
         if(pop != null){
             Configuration conf = pop.getConfiguration();
             if(graph == null) graph = new Graph(pop.getProtocol());
-            if(graph.isWellDefined(conf)){
-                anim.addText("Well defined !", Color.BLACK);
+
+            isWellDefinedThread = new Thread(() -> {
+                anim.doCalcul(true);
                 anim.draw(ctx);
-            } else {
-                anim.addText("Not well defined!", Color.RED);
-                anim.draw(ctx);
-            }
+                if(graph.isWellDefined(conf)){
+                    anim.doCalcul(false);
+                    anim.addText("Well defined !", Color.BLACK);
+                    anim.draw(ctx);
+                } else {
+                    anim.doCalcul(false);
+                    anim.addText("Not well defined!", Color.RED);
+                    anim.draw(ctx);
+                }
+            });
+            isWellDefinedThread.start();
         }
     }
 
@@ -413,6 +423,7 @@ public class View extends BorderPane {
 
     public void backAction(ActionEvent e){
         if(anim != null) this.anim.stop();
+        if(isWellDefinedThread != null) isWellDefinedThread.interrupt();
         this.menuStart.changeScene("menu");
     }
 
@@ -421,13 +432,7 @@ public class View extends BorderPane {
         ind = -1;
         reset.fire();
     }
-
-
-    private boolean isDigit(char c) {
-        String digits = "0123456789";
-        for(int i = 0; i < digits.length(); i++) {
-            if(digits.charAt(i) == c) return true;
-        }
-        return false;
+    public void stopThread() {
+        isWellDefinedThread.interrupt();
     }
 }

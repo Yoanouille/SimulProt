@@ -109,6 +109,7 @@ public class Graph {
         String endingConf = "";
         queue.add(conf);
         while(!queue.isEmpty()){
+            if(Thread.currentThread().isInterrupted()) return true;
             String hasFinalSon = hasFinalSon(queue.getFirst());
             if(hasFinalSon.equals("noFinalSon")){
                 return false;
