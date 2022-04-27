@@ -433,6 +433,6 @@ public class View extends BorderPane {
         reset.fire();
     }
     public void stopThread() {
-        isWellDefinedThread.interrupt();
+        if(isWellDefinedThread != null) isWellDefinedThread.interrupt();
     }
 }
