@@ -30,6 +30,7 @@ public class Rule {
     public void isIn(StateSet possibleStates) throws IllegalSyntax {
         for(int i = 0; i < 4; i++) {
             if(!rule[i].isIn(possibleStates)) {
+                System.out.println(rule[i]);
                 throw new IllegalSyntax("Error syntax Rule, some states are not defined in STATES !");
             }
         }

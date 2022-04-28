@@ -1,23 +1,39 @@
 package projet.mi;
 
 import projet.mi.exception.IllegalSyntax;
+import projet.mi.gen.Gen;
 import projet.mi.graph.Configuration;
 import projet.mi.graph.Graph;
 import projet.mi.gui.MenuStart;
 import projet.mi.model.Population;
 import projet.mi.model.Protocol;
 
+import java.io.FileNotFoundException;
+
 public class Main {
-    public static void main(String[] args) throws IllegalSyntax {
+    public static void main(String[] args) throws IllegalSyntax, FileNotFoundException {
+        // x - y < 1
+//        int[] var = {1,-1};
+//        String[] nameState = {"x", "y"};
+//        int c = 1;
+//        Gen gen = new Gen(var, nameState, c, "../test.pp");
+
+        //x - y + 2z < 3
+        int[] var = {1,-1,2};
+        String[] nameState = {"x", "y", "z"};
+        int c = 3;
+        Gen gen = new Gen(var, nameState, c, "../test2.pp");
+
+
         Protocol p = new Protocol("../examples/notWellDefined.pp");
-        System.out.print(p);
+    //    System.out.print(p);
         //String[] startingStates = {"Y", "Y", "Y", "N", "N"};
         String[] startingStates = {"0", "0", "1", "1"};
         Population pop = new Population(p, startingStates);
         Configuration conf = pop.getConfiguration();
         Graph g = new Graph(p);
-        System.out.println(g.isWellDefined(conf));
-        System.out.println(g);
+     //   System.out.println(g.isWellDefined(conf));
+     //   System.out.println(g);
         /*String[] startingStates = {"Y", "Y", "Y", "N", "N"};
         Population pop = new Population(p, startingStates);
         Configuration conf = pop.getConfiguration();
