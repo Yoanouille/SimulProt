@@ -15,6 +15,7 @@ public class Protocol {
     private StateSet no;
     private Rule[] rules;
     private LinkedList<HashMap<State, Integer>> configurations;
+    private HashMap<State, State> alias;
 
     public Protocol(String fileName) throws IllegalSyntax {
         this.configurations = new LinkedList<>();
@@ -115,6 +116,14 @@ public class Protocol {
                 }
                 this.title = words[1];
                 break;
+
+            case "ALIAS":
+                if(words.length <= 1) {
+                    throw new IllegalSyntax("Error syntax on line ALIAS !");
+                }
+                alias = new HashMap<>();
+                readAlias(words[1]);
+
             default:
                 return false;
         }
@@ -167,12 +176,41 @@ public class Protocol {
         return map;
     }
 
+    private void readAlias(String line) throws IllegalSyntax {
+        String[] words = line.split(" ");
+        for(int i = 0; i < words.length; i++) {
+            String[] subWords = words[i].split("->");
+            if(subWords.length != 2) {
+                throw new IllegalSyntax("Error line ALIAS !");
+            }
+            alias.put(new State(subWords[0]), new State(subWords[1]));
+        }
+    }
+
+    public State getAlias(State state) {
+        if(alias == null) return state;
+        State alia = alias.get(state);
+        if(alia == null) return state;
+        return alia;
+    }
+
     public StateSet getStates(){
         return states;
     }
 
     public StateSet getInit(){
         return init;
+    }
+
+    public StateSet getInitAlias() {
+        LinkedList<State> initList = init.toList();
+        State[] ini = new State[initList.size()];
+        int i = 0;
+        for(State state : initList) {
+            ini[i] = getAlias(state);
+            i++;
+        }
+        return new StateSet(ini);
     }
 
     public StateSet getYes(){

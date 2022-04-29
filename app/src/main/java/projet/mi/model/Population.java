@@ -38,9 +38,9 @@ public class Population {
 
     public void randomPop(int sizePop) {
         this.agents = new Agent[sizePop];
-        int len = protocol.getInit().size();
+        int len = protocol.getInitAlias().size();
         State[] possibleStates = new State[len];
-        protocol.getInit().toArray(possibleStates);
+        protocol.getInitAlias().toArray(possibleStates);
         for(int i = 0; i < sizePop; i++) {
             agents[i] = new Agent(possibleStates[(int)(Math.random() * len)]);
         }
@@ -55,7 +55,7 @@ public class Population {
         int ind = 0;
         for(Map.Entry<State, Integer> e : configuration.entrySet()){
             for(int i = 0; i < e.getValue(); i++){
-                this.agents[ind] = new Agent(e.getKey());
+                this.agents[ind] = new Agent(protocol.getAlias(e.getKey()));
                 ind++;
             }
         }

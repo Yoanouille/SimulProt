@@ -3,13 +3,16 @@ package projet.mi.gen;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 public class Gen {
 
-    LinkedList<GenState> initial;
+    LinkedList<String> initial;
     LinkedList<GenState> yes;
     LinkedList<GenState> no;
+    HashMap<String, String> alias;
     public Gen(int[] var, String[]stateNames, int sup, String file) throws FileNotFoundException {
         //Faire une vérification que les var sont tous distincts sinon dire qu'on fait une réunion entre 2 états
         // Ex : si qqun veut faire x + y < 2, lui dire que cela revient à faire x' < 2 (où x' = x + y)
@@ -24,6 +27,8 @@ public class Gen {
 
         int s = getS(var, sup);
         initial = new LinkedList<>();
+        alias = new HashMap<>();
+
         yes = new LinkedList<>();
         no = new LinkedList<>();
         GenState[] states = genStates(s);
@@ -31,54 +36,67 @@ public class Gen {
             GenState state = new GenState(1, (var[i] < sup ? 1 : 0), var[i]);
             for(int j = 0; j < states.length; j++) {
                 if(state.equals(states[j])) {
-                    states[j].addAlias(stateNames[i]);
-                    initial.add(states[j]);
+                    alias.put(stateNames[i], states[j].toString());
+                    initial.add(stateNames[i]);
                     break;
                 }
             }
         }
 
         pw.print("STATES: ");
-        System.out.print("STATES: ");
+       // System.out.print("STATES: ");
         for(int i = 0; i < states.length; i++) {
-            System.out.print(states[i] + " ");
+       //     System.out.print(states[i] + " ");
             pw.print(states[i] + " ");
         }
+        for(int i = 0; i < stateNames.length; i++) {
+        //    System.out.print(stateNames[i] + " ");
+            pw.print(stateNames[i] + " ");
+        }
         pw.println();
-        System.out.println();
+       // System.out.println();
 
         pw.print("INITIAL: ");
-        System.out.print("INITIAL: ");
-        for(GenState gst : initial) {
+       // System.out.print("INITIAL: ");
+        for(String gst : initial) {
             pw.print(gst + " ");
-            System.out.print(gst + " ");
+            //System.out.print(gst + " ");
         }
         pw.println();
-        System.out.println();
+        //System.out.println();
+
+        pw.print("ALIAS: ");
+        //System.out.print("ALIAS: ");
+        for(Map.Entry<String, String> entry : alias.entrySet()) {
+            pw.print(entry.getKey() + "->" + entry.getValue() + " ");
+           // System.out.print(entry.getKey() + "->" + entry.getValue() + " ");
+        }
+        pw.println();
+        //System.out.println();
 
         pw.print("YES: ");
-        System.out.print("YES: ");
+       // System.out.print("YES: ");
         for(GenState gst : yes) {
             pw.print(gst + " ");
-            System.out.print(gst + " ");
+           // System.out.print(gst + " ");
         }
         pw.println();
-        System.out.println();
+       // System.out.println();
 
         pw.print("NO: ");
-        System.out.print("NO: ");
+      //  System.out.print("NO: ");
         for(GenState gst : no) {
             pw.print(gst + " ");
-            System.out.print(gst + " ");
+           // System.out.print(gst + " ");
         }
         pw.println();
-        System.out.println();
+        //System.out.println();
 
         pw.println("RULES:");
         LinkedList<GenRule> genRules = genRule(states, s, sup);
         for(int i = 0; i < genRules.size(); i++) {
             pw.println(genRules.get(i));
-            System.out.println(genRules.get(i));
+           // System.out.println(genRules.get(i));
         }
         pw.close();
     }
@@ -108,7 +126,7 @@ public class Gen {
     public LinkedList<GenRule> genRule(GenState[] genStates, int s, int c) {
         LinkedList<GenRule> genRules = new LinkedList<>();
         for(int i = 0; i < genStates.length; i++) {
-            for(int j = i + 1; j < genStates.length; j++) {
+            for(int j = i; j < genStates.length; j++) {
                 if(genStates[i].getLeader() == 1 || genStates[j].getLeader() == 1) {
                     genRules.add(new GenRule(genStates[i], genStates[j], s, c));
                 }

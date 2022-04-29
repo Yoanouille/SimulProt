@@ -2,6 +2,7 @@ package projet.mi.model;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 public class StateSet extends HashSet<State> {
     public StateSet() {
@@ -12,6 +13,12 @@ public class StateSet extends HashSet<State> {
         super();
         for(int i = 0; i < states.length; i++) {
             this.add(new State(states[i]));
+        }
+    }
+
+    public StateSet(State[] states) {
+        for(int i = 0; i < states.length; i++) {
+            this.add(states[i]);
         }
     }
 
@@ -45,5 +52,14 @@ public class StateSet extends HashSet<State> {
             rep += ite.next().toString() + " ";
         }
         return rep;
+    }
+
+    public LinkedList<State> toList() {
+        LinkedList<State> res = new LinkedList<>();
+        Iterator<State> ite = this.iterator();
+        while(ite.hasNext()) {
+            res.add(ite.next());
+        }
+        return res;
     }
 }
