@@ -13,19 +13,12 @@ public class Gen {
     LinkedList<GenState> yes;
     LinkedList<GenState> no;
     HashMap<String, String> alias;
-    public Gen(int[] var, String[]stateNames, int sup, String file) throws FileNotFoundException {
-        //Faire une vérification que les var sont tous distincts sinon dire qu'on fait une réunion entre 2 états
-        // Ex : si qqun veut faire x + y < 2, lui dire que cela revient à faire x' < 2 (où x' = x + y)
-        // Cela permet d'éviter une énorme redondance au niveau des règles et de potentiellement accélérer nos algos !
-
-        // Ou alors ajouter un moyen pour dans les fichiers pour dire que x et y suivent le comportement de un tel
-        // Genre faire ALIAS: y->x
-        // Et quand on génére la population, on remplace y par x
+    public Gen(int[] var, String[]stateNames, int sup, int mod, String file, String title) throws FileNotFoundException {
 
         File f = new File(file);
         PrintWriter pw = new PrintWriter(f);
 
-        int s = getS(var, sup);
+        int s = getS(var, sup, mod);
         initial = new LinkedList<>();
         alias = new HashMap<>();
 
@@ -43,70 +36,56 @@ public class Gen {
             }
         }
 
+        pw.println("TITLE: " + title);
+
         pw.print("STATES: ");
-       // System.out.print("STATES: ");
         for(int i = 0; i < states.length; i++) {
-       //     System.out.print(states[i] + " ");
             pw.print(states[i] + " ");
         }
         for(int i = 0; i < stateNames.length; i++) {
-        //    System.out.print(stateNames[i] + " ");
             pw.print(stateNames[i] + " ");
         }
         pw.println();
-       // System.out.println();
 
         pw.print("INITIAL: ");
-       // System.out.print("INITIAL: ");
         for(String gst : initial) {
             pw.print(gst + " ");
-            //System.out.print(gst + " ");
         }
         pw.println();
-        //System.out.println();
 
         pw.print("ALIAS: ");
-        //System.out.print("ALIAS: ");
         for(Map.Entry<String, String> entry : alias.entrySet()) {
             pw.print(entry.getKey() + "->" + entry.getValue() + " ");
-           // System.out.print(entry.getKey() + "->" + entry.getValue() + " ");
         }
         pw.println();
-        //System.out.println();
 
         pw.print("YES: ");
-       // System.out.print("YES: ");
         for(GenState gst : yes) {
             pw.print(gst + " ");
-           // System.out.print(gst + " ");
         }
         pw.println();
-       // System.out.println();
 
         pw.print("NO: ");
-      //  System.out.print("NO: ");
         for(GenState gst : no) {
             pw.print(gst + " ");
-           // System.out.print(gst + " ");
         }
         pw.println();
-        //System.out.println();
 
         pw.println("RULES:");
-        LinkedList<GenRule> genRules = genRule(states, s, sup);
+        LinkedList<GenRule> genRules = genRule(states, s, sup, mod);
         for(int i = 0; i < genRules.size(); i++) {
             pw.println(genRules.get(i));
-           // System.out.println(genRules.get(i));
         }
         pw.close();
     }
 
-    public int getS(int[] var, int sup) {
+    public int getS(int[] var, int sup, int mod) {
         int s = Math.abs(sup) + 1;
         for(int i = 0; i < var.length; i++) {
             int a = Math.abs(var[i]);
             if(a > s) s = a;
         }
+        s = Math.max(s, mod);
         return s;
     }
 
@@ -123,12 +102,12 @@ public class Gen {
         return states;
     }
 
-    public LinkedList<GenRule> genRule(GenState[] genStates, int s, int c) {
+    public LinkedList<GenRule> genRule(GenState[] genStates, int s, int c, int mod) {
         LinkedList<GenRule> genRules = new LinkedList<>();
         for(int i = 0; i < genStates.length; i++) {
             for(int j = i; j < genStates.length; j++) {
                 if(genStates[i].getLeader() == 1 || genStates[j].getLeader() == 1) {
-                    genRules.add(new GenRule(genStates[i], genStates[j], s, c));
+                    genRules.add(new GenRule(genStates[i], genStates[j], s, c, mod));
                 }
             }
         }

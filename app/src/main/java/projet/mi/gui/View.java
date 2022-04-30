@@ -146,8 +146,13 @@ public class View extends BorderPane {
 
         Menu fileMenu = new Menu("File");
         MenuItem importItem = new MenuItem("import");
+        MenuItem generateItem = new MenuItem("generate");
+
+
         fileMenu.getItems().add(importItem);
+        fileMenu.getItems().add(generateItem);
         importItem.setOnAction(this::selectBrowse);
+        generateItem.setOnAction(this::generateAction);
 
         Menu viewMenu = new Menu("View");
 
@@ -203,41 +208,45 @@ public class View extends BorderPane {
         File file = filechooser.showOpenDialog(stage);
         if(file != null) {
             stage.close();
-            try {
-                this.protocolPath = file.getPath();
-                Protocol p = new Protocol(file.getPath());
-                title.setText(p.getTitle());
-                this.pop = new Population(p);
-                graph = new Graph(pop.getProtocol());
-
-                chooseConf.getItems().clear();
-                for(HashMap<State, Integer> c : p.getConfigurations()){
-                    MenuItem opt = new MenuItem(c.toString());
-                    opt.setOnAction(this::selectConf);
-                    chooseConf.getItems().add(opt);
-                }
-
-                chooseConf.setVisible(true);
-                random.setVisible(true);
-                createConf.setVisible(true);
-
-                if(this.anim != null) {
-                    this.anim.stop();
-                    changeImage(togglePlay, "images/play.png");
-                    running = false;
-                }
-                this.anim = new Animation(this.pop, this.width, this.height, this.ctx, checkIsFinal.isSelected());
-                this.anim.setDrawNames(namesItem.isSelected());
-                this.anim.draw(this.ctx);
-                //legend = true;
-                drawInfo();
-            } catch (IllegalSyntax ex) {
-                this.drawError(ex.getMessage());
-            }
-            this.isFinal.setText("is final ?");
-            this.isFinal.setVisible(true);
-            this.isFinal.setManaged(true);
+            openProtocol(file.getPath());
         }
+    }
+
+    public void openProtocol(String path) {
+        try {
+            this.protocolPath = path;
+            Protocol p = new Protocol(path);
+            title.setText(p.getTitle());
+            this.pop = new Population(p);
+            graph = new Graph(pop.getProtocol());
+
+            chooseConf.getItems().clear();
+            for(HashMap<State, Integer> c : p.getConfigurations()){
+                MenuItem opt = new MenuItem(c.toString());
+                opt.setOnAction(this::selectConf);
+                chooseConf.getItems().add(opt);
+            }
+
+            chooseConf.setVisible(true);
+            random.setVisible(true);
+            createConf.setVisible(true);
+
+            if(this.anim != null) {
+                this.anim.stop();
+                changeImage(togglePlay, "images/play.png");
+                running = false;
+            }
+            this.anim = new Animation(this.pop, this.width, this.height, this.ctx, checkIsFinal.isSelected());
+            this.anim.setDrawNames(namesItem.isSelected());
+            this.anim.draw(this.ctx);
+            //legend = true;
+            drawInfo();
+        } catch (IllegalSyntax ex) {
+            this.drawError(ex.getMessage());
+        }
+        this.isFinal.setText("is final ?");
+        this.isFinal.setVisible(true);
+        this.isFinal.setManaged(true);
     }
 
     private void changeImage(Button b, String url) {
@@ -379,7 +388,7 @@ public class View extends BorderPane {
         }
     }
 
-    private void drawError(String error) {
+    public void drawError(String error) {
         ctx.clearRect(0,0,width, height);
         ctx.setFont(new Font(ctx.getFont().getName(), 20));
         ctx.setTextBaseline(VPos.CENTER);
@@ -434,5 +443,9 @@ public class View extends BorderPane {
     }
     public void stopThread() {
         if(isWellDefinedThread != null) isWellDefinedThread.interrupt();
+    }
+
+    private void generateAction(ActionEvent e) {
+        new MenuGen(this);
     }
 }

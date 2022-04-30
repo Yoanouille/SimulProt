@@ -8,20 +8,20 @@ public class GenParser {
     private LinkedList<String> names;
     private LinkedList<Integer> var;
 
+    private int mod = 0;
+
     private int c;
 
     public GenParser(String line) throws IllegalSyntax {
         String[] parts = line.split("<");
+        boolean modulo = false;
         if(parts.length != 2) {
-            throw new IllegalSyntax("Error split on <");
+            parts = line.split("=");
+            if(parts.length != 2) throw new IllegalSyntax("Error split on <");
+            else modulo = true;
         }
         String left = parts[0];
         String right = parts[1];
-        try {
-            c = Integer.parseInt(right);
-        } catch (RuntimeException e) {
-            throw new IllegalSyntax("Error need number right part !");
-        }
 
         names = new LinkedList<>();
         var = new LinkedList<>();
@@ -57,6 +57,16 @@ public class GenParser {
             System.out.print(va + " ");
         }
         System.out.println();
+
+        if(modulo) {
+            splitRight(right);
+        } else {
+            try {
+                c = Integer.parseInt(right);
+            } catch (Exception e) {
+                throw new IllegalSyntax("Error need number right part !");
+            }
+        }
     }
 
     public void splitWords(String word, boolean plus) throws IllegalSyntax {
@@ -66,11 +76,31 @@ public class GenParser {
 //            System.out.print(words[i] + " ");
 //        }
 //        System.out.println();
-        if(words.length != 2) {
+        if(words.length != 2 && words.length != 1) {
             throw new IllegalSyntax("Error split on *");
         }
-        var.add(Integer.parseInt((plus ? "" : "-") + words[0]));
-        names.add(words[1]);
+        if(words.length == 2) {
+            try {
+                var.add(Integer.parseInt((plus ? "" : "-") + words[0]));
+                names.add(words[1]);
+            } catch (Exception e) {
+                throw new IllegalSyntax("Error number in left part of the expression");
+            }
+        } else {
+            var.add((plus ? 1 : -1));
+            names.add(words[0]);
+        }
+    }
+
+    public void splitRight(String word) throws IllegalSyntax {
+        String[] words = word.split("mod");
+        if(words.length != 2) throw new IllegalSyntax("Error right part split on mod");
+        try {
+            c = Integer.parseInt(words[0]);
+            mod = Integer.parseInt(words[1]);
+        } catch (Exception e) {
+            throw new IllegalSyntax("Error number right part");
+        }
     }
 
     public int[] getVar() {
@@ -91,5 +121,9 @@ public class GenParser {
 
     public int getC() {
         return c;
+    }
+
+    public int getMod() {
+        return mod;
     }
 }

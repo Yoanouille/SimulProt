@@ -20,15 +20,24 @@ public class GenState {
         return "(" + leader + ',' + output + "," + value + ")";
     }
 
-    public GenState[] getRuleState(GenState gs2, int s, int c) {
+    public GenState[] getRuleState(GenState gs2, int s, int c, int mod) {
         if(this.leader == 0 && gs2.leader == 0) return null;
-        GenState[] gen = new GenState[2];
-        int q = Math.max(-s, Math.min(s, this.value + gs2.value));
-        int r = this.value + gs2.value - q;
-        int b = (q < c ? 1 : 0);
-        gen[0] = new GenState(1, b, q);
-        gen[1] = new GenState(0, b, r);
-        return gen;
+        if(mod == 0) {
+            GenState[] gen = new GenState[2];
+            int q = Math.max(-s, Math.min(s, this.value + gs2.value));
+            int r = this.value + gs2.value - q;
+            int b = (q < c ? 1 : 0);
+            gen[0] = new GenState(1, b, q);
+            gen[1] = new GenState(0, b, r);
+            return gen;
+        } else {
+            GenState[] gen = new GenState[2];
+            int q = (this.value + gs2.value)%mod;
+            int b = ( (q + mod)%mod == (c + mod)%mod ? 1 : 0);
+            gen[0] = new GenState(1, b, q);
+            gen[1] = new GenState(0, b, 0);
+            return gen;
+        }
     }
 
     public void addAlias(String alia) {
