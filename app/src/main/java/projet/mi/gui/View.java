@@ -287,6 +287,7 @@ public class View extends BorderPane {
 
         this.slow.setDisable(true);
         this.accelerate.setDisable(false);
+        this.stopThread();
         if(this.anim != null) {
             this.anim.stop();
             changeImage(togglePlay, "images/play.png");
@@ -443,7 +444,10 @@ public class View extends BorderPane {
     }
     public void stopThread() {
         System.out.println("TEST FIN THREAD IS-WELL-DEFINED");
-        if(isWellDefinedThread != null) isWellDefinedThread.interrupt();
+        if(isWellDefinedThread != null) {
+            isWellDefinedThread.interrupt();
+            isWellDefinedThread = null;
+        }
     }
 
     private void generateAction(ActionEvent e) {
