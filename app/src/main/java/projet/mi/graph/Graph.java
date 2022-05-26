@@ -90,6 +90,7 @@ public class Graph {
         LinkedList<Configuration> queue = new LinkedList<>();
         queue.add(conf);
         while(!queue.isEmpty()){
+            if(Thread.currentThread().isInterrupted()) return "noFinalSon";
             Configuration c = queue.getFirst();
             if(isFinal(c)){
                 if(c.allInSet(protocol.getYes())){

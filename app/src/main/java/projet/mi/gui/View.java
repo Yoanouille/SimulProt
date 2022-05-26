@@ -442,6 +442,7 @@ public class View extends BorderPane {
         reset.fire();
     }
     public void stopThread() {
+        System.out.println("TEST FIN THREAD IS-WELL-DEFINED");
         if(isWellDefinedThread != null) isWellDefinedThread.interrupt();
     }
 
