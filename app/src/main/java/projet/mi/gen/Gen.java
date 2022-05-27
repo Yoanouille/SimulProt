@@ -18,15 +18,22 @@ public class Gen {
         File f = new File(file);
         PrintWriter pw = new PrintWriter(f);
 
+        mod = Math.abs(mod);
         int s = getS(var, sup, mod);
         initial = new LinkedList<>();
         alias = new HashMap<>();
 
         yes = new LinkedList<>();
         no = new LinkedList<>();
-        GenState[] states = genStates(s);
+        GenState[] states = mod == 0 ? genStates(s) : genStatesMod(mod);
         for(int i = 0; i < var.length; i++) {
-            GenState state = new GenState(1, (var[i] < sup ? 1 : 0), var[i]);
+            GenState state;
+            if(mod == 0){
+               state  = new GenState(1, (var[i] < sup ? 1 : 0), var[i]);
+            } else {
+                var[i] = ((var[i]%mod)+mod)%mod;
+                state = new GenState(1, (var[i] == sup ? 1 : 0), var[i]);
+            }
             for(int j = 0; j < states.length; j++) {
                 if(state.equals(states[j])) {
                     alias.put(stateNames[i], states[j].toString());
@@ -95,6 +102,19 @@ public class Gen {
             for(int j = 0; j < 4; j++) {
                 GenState st = new GenState(j % 2, (j < 2 ? 1 : 0), i);
                 states[4 * (i + s) + j] = st;
+                if(st.getOutput() == 1) yes.add(st);
+                else no.add(st);
+            }
+        }
+        return states;
+    }
+
+    public GenState[] genStatesMod(int m) {
+        GenState[] states = new GenState[m*2*2];
+        for(int i = 0;  i <= m-1; i++) {
+            for(int j = 0; j < 4; j++) {
+                GenState st = new GenState(j % 2, (j < 2 ? 1 : 0), i);
+                states[4 * i + j] = st;
                 if(st.getOutput() == 1) yes.add(st);
                 else no.add(st);
             }
