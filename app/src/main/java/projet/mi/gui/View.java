@@ -369,27 +369,23 @@ public class View extends BorderPane {
 
     private void isWellDefinedAction(ActionEvent actionEvent) {
         if(pop != null) {
-            if (isWellDefinedThread == null || isWellDefinedThread.getState() == Thread.State.TERMINATED){
-                Configuration conf = pop.getConfiguration();
-                if (graph == null) graph = new Graph(pop.getProtocol());
+            Configuration conf = pop.getConfiguration();
+            if (graph == null) graph = new Graph(pop.getProtocol());
 
-                isWellDefinedThread = new Thread(() -> {
-                    anim.doCalcul(true);
+            isWellDefinedThread = new Thread(() -> {
+                anim.doCalcul(true);
+                anim.draw(ctx);
+                if (graph.isWellDefined(conf)) {
+                    anim.doCalcul(false);
+                    anim.addText("Well defined !", Color.BLACK);
                     anim.draw(ctx);
-                    if (graph.isWellDefined(conf)) {
-                        anim.doCalcul(false);
-                        anim.addText("Well defined !", Color.BLACK);
-                        anim.draw(ctx);
-                    } else {
-                        anim.doCalcul(false);
-                        anim.addText("Not well defined!", Color.RED);
-                        anim.draw(ctx);
-                    }
-                });
-                isWellDefinedThread.start();
-            } else {
-                stopThread();
-            }
+                } else {
+                    anim.doCalcul(false);
+                    anim.addText("Not well defined!", Color.RED);
+                    anim.draw(ctx);
+                }
+            });
+            isWellDefinedThread.start();
         }
     }
 
