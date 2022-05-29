@@ -33,7 +33,7 @@ public class GenState {
         } else {
             GenState[] gen = new GenState[2];
             int q = (this.value + gs2.value)%mod;
-            int b = ( (q + mod)%mod == (c + mod)%mod ? 1 : 0);
+            int b = ( q%mod == c%mod ? 1 : 0);
             gen[0] = new GenState(1, b, q);
             gen[1] = new GenState(0, b, 0);
             return gen;
