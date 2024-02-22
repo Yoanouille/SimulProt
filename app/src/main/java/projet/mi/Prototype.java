@@ -1,4 +1,4 @@
-
+package projet.mi;
 public class Prototype{
     public static String[] interact(String a, String b, String[][] rules){
         String[] rep = new String[2];
@@ -38,8 +38,8 @@ public class Prototype{
         return true;
     }
 
-    public static int run(int n, String[] pop, String[][] rules, String[] yes, String[] no, boolean print){
-        if(print) printPopulation(pop);
+    public static int run(int n, String[] pop, String[][] rules, String[] yes, String[] no){
+        //printPopulation(pop);
         for(int i = 0; i < n || n == -1; i++){
             int ind1 = (int)(Math.random()*pop.length);
             int ind2;
@@ -49,7 +49,7 @@ public class Prototype{
             String[] newStates = interact(pop[ind1], pop[ind2], rules);
             pop[ind1] = newStates[0];
             pop[ind2] = newStates[1];
-            if(print) printPopulation(pop);
+            //printPopulation(pop);
             if(n == -1){
                 if(allInSet(pop, yes)) return 1;
                 if(allInSet(pop, no)) return 0;
@@ -78,15 +78,15 @@ public class Prototype{
                 }
             }
             double r = ((double)numberOfA)/((double)(numberOfA+numberOfB));
-            int result = run(100000, pop, rules, yes, no, false);
-            System.out.println("% of Y = "+r+", result: "+result);
+            int result = run(100000, pop, rules, yes, no);
+            System.out.println("% of A = "+r+", result: "+result);
         }
     }
 
     public static void main(String[] args){
         
         // converge vers que des y si Y >= M au départ
-        /*String[] pop = {"Y", "Y", "N", "N", "N"};
+        String[] pop = {"Y", "Y", "N", "N", "N"};
         String[] yes = {"Y", "y"};
         String[] no = {"N", "n"};
         String[][] rules = {
@@ -94,7 +94,7 @@ public class Prototype{
             {"Y", "n", "Y", "n"},
             {"N", "y", "N", "n"},
             {"y", "n", "y", "y"},
-        };*/
+        };
         /*String[] pop = {"Y", "Y", "Y", "N", "N"};
         String[] yes = {"Y", "Y1", "Y2", "y"};
         String[] no = {"N", "N1", "N2", "N3", "n"};
@@ -156,21 +156,6 @@ public class Prototype{
             {"0", "1", "1", "1"}
         };*/
         //run(-1, pop, rules, yes, no);
-        //test(10, rules, yes, no);
-
-        
-        String filename = "example.pp";
-        if(args.length >= 1){
-            filename = args[0];
-        }
-        String[] pop = {"Y", "Y", "Y", "N", "N", "N"};
-        if(args.length >= 2){
-            pop = args[1].split(",");
-        }
-
-        Protocol p = new Protocol(filename);
-        System.out.println(p);
-        run(-1, pop, p.getRules(), p.getYes(), p.getNo(), true);
-        //test(10, p.getRules(), p.getYes(), p.getNo());
+        test(10, rules, yes, no);
     }
 }

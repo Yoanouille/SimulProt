@@ -1,0 +1,36 @@
+\documentclass[a4paper,12pt]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{mathtools, bm}
+\usepackage{amssymb, bm}
+\title{Rapport Projet MI Simulation de Protocole de Population}
+\author{Yoan ROUGEOLLE \and Alexandre LEYMARIE }
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Définition}
+
+\subsection{Population}
+
+Soit $E$ un ensemble fini. Une $population$ sur $E$ est une fonction $P: E \longrightarrow \mathbb{N}$ où il existe $e \in E$ tel que $P(e) > 0$. $P(e)$ représente le nombre d'individu de type $e \in E$ dans la population.\\
+On notera $Pop(E)$ l'ensemble des $population$ sur E et $\boldsymbol{e}$  la $population$ vérifiant $\boldsymbol{e}(e) = 1$ et $\boldsymbol{e}(e') = 0$ $\forall e \in E, e \ne e'$
+
+\subsection{Protocole de Population}
+Un protocole de population $(Q, Q_{0}, F_{Y}, F_{N},\Delta)$ où :\\
+$Q$ est un ensemble fini non vide appelé ensemble d'\underline{états}\\
+$Q_{0} \subseteq Q$ est appelé ensemble \underline{états initiales}\\
+$F_{Y} \subseteq Q$, $F_{N} \subseteq Q$,  $F_{Y} \cap F_{N} = \emptyset$, sont respectivement l'ensemble des \underline{états positifs} et l'ensemble des \underline{états négatifs}\\
+$\Delta \subseteq Q^{4}$ représentant l'ensemble des \underline{transitions}
+
+\subsection{Transitions et Configurations}
+Soit $(Q, Q_{0}, F_{Y}, F_{N},\Delta)$ un protocole de population\\
+Soit $\delta=(q_{1},q_{2},q_{3},q_{4}) \in \Delta$. On pourra noter $\delta = (q_{1}, q_{2}) \rightarrow (q_{3},q_{4})$\\
+Soient $C \in Pop(Q)$ et $C' \in Pop(Q)$\\
+On notera $C \xrightarrow{\delta} C'$ ssi\\
+$C \geq \boldsymbol{q_{1}} + \boldsymbol{q_{2}}$ et $C' = C + \boldsymbol{q_{3}} + \boldsymbol{q_{4}} - \boldsymbol{q_{1}} - \boldsymbol{q_{2}}$
+
+
+\end{document}

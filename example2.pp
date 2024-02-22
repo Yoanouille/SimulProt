@@ -1,6 +1,0 @@
-STATES: Y N
-INITIAL: Y N
-RULES:
-    Y N -> Y Y
-YES: Y
-NO: N
